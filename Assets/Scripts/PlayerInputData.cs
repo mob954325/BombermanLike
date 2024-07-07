@@ -2,9 +2,9 @@ using UnityEngine;
 using Fusion;
 
 /// <summary>
-/// ÇÃ·¹ÀÌ¾î ÀÎÇ² µ¥ÀÌÅÍ
+/// í”Œë ˆì´ì–´ ì¸í’‹ ë°ì´í„°
 /// </summary>
-public struct NetworkInputData : INetworkInput
+public struct PlayerInputData : INetworkInput
 {
     public Vector3 direction;
 }

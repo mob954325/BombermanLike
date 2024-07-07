@@ -3,49 +3,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.InputSystem;
 using Fusion;
 using Fusion.Sockets;
-using UnityEngine.InputSystem;
 
-public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
+/// <summary>
+/// í”Œë ˆì´ì–´ ìŠ¤í°ê´€ë ¨ í´ë˜ìŠ¤
+/// </summary>
+public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     /// <summary>
-    /// ³×Æ®¿öÅ© ·¯³Ê
+    /// ë„¤íŠ¸ì›Œí¬ ëŸ¬ë„ˆ
     /// </summary>
     private NetworkRunner runner;
 
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î ÇÁ¸®ÆÕ
+    /// í”Œë ˆì´ì–´ í”„ë¦¬íŒ¹
     /// </summary>
     [SerializeField]
     private NetworkPrefabRef playerPrefab;
 
-    private PlayerInputAction playerInputAction;
-
-    private Vector3 playerInputDir;
-
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î µñ¼Å³Ê¸® (¼ÒÈ¯µÈ ÇÃ·¹ÀÌ¾î °ü¸®¿ë)
+    /// í”Œë ˆì´ì–´ ë”•ì…”ë„ˆë¦¬ (ìƒì„±ëœ í”Œë ˆì´ì–´ ê´€ë¦¬ìš©)
     /// </summary>
     private Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
 
-    // ±â´É ÇÔ¼ö =========================================================
+    // ê¸°ëŠ¥ í•¨ìˆ˜ =========================================================
     async void StartGame(GameMode mode)
     {
         runner = gameObject.AddComponent<NetworkRunner>();
-        runner.ProvideInput = true; // ÀÔ·Â µ¥ÀÌÅÍ Á¦°ø
+        runner.ProvideInput = true; // ì…ë ¥ ë°ì´í„° ì œê³µ
 
-        // ÇöÀç ¾ÀÀÇ ³×Æ®¿öÅ© ¾À ÀÎÆ÷ Ãß°¡
+        // í˜„ì¬ ì”¬ì˜ ë„¤íŠ¸ì›Œí¬ ì”¬ ì¸í¬ ì¶”ê°€
         SceneRef scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
         NetworkSceneInfo sceneInfo = new NetworkSceneInfo();
 
         if(scene.IsValid)
-        {   // ¾À ·¹ÆÛ·±½º Ãß°¡
+        {   // ì”¬ ë ˆí¼ëŸ°ìŠ¤ ì¶”ê°€
             sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
         }
 
-        // ¼¼¼Ç¿¡ ½ÃÀÛ or Âü°¡
+        // ì„¸ì…˜ì— ì‹œì‘ or ì°¸ê°€
         await runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
@@ -53,11 +51,9 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
-
-        InputEnable();
     }
 
-    // ³×Æ®¿öÅ© Äİ¹é ÇÔ¼ö ==================================================
+    // ë„¤íŠ¸ì›Œí¬ ì½œë°± í•¨ìˆ˜ ==================================================
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -74,52 +70,19 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         if(spawnedPlayers.TryGetValue(player, out NetworkObject networkObject))
         {
-            runner.Despawn(networkObject);  // ÇÃ·¹ÀÌ¾î µğ½ºÆù
-            spawnedPlayers.Remove(player);  // ¸®½ºÆ® Á¦°Å
+            runner.Despawn(networkObject);  // í”Œë ˆì´ì–´ ë””ìŠ¤í°
+            spawnedPlayers.Remove(player);  // ë¦¬ìŠ¤íŠ¸ ì œê±°
         }
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        NetworkInputData data = new NetworkInputData();
 
-        data.direction = playerInputDir;
-        input.Set(data);
     }
 
-    // À¯´ÏÆ¼ ÇÔ¼ö ========================================================
+    // ìœ ë‹ˆí‹° í•¨ìˆ˜ ========================================================
 
-    private void Awake()
-    {
-        playerInputAction = new PlayerInputAction();
-    }
-
-    private void OnDisable()
-    {
-        InputDisable();
-    }
-
-    private void InputEnable()
-    {
-        playerInputAction.Enable();
-        playerInputAction.Player.Move.performed += OnInputMove;
-        playerInputAction.Player.Move.canceled += OnInputMove;
-    }
-
-    private void InputDisable()
-    {
-        playerInputAction.Player.Move.canceled -= OnInputMove;
-        playerInputAction.Player.Move.performed -= OnInputMove;
-        playerInputAction.Enable();
-    }
-
-    private void OnInputMove(InputAction.CallbackContext context)
-    {
-        Vector2 read = context.ReadValue<Vector2>();
-        playerInputDir = new Vector3(read.x, 0, read.y);
-    }
-
-    // °ÔÀÓ ½ÃÀÛµÉ ¶§ »ı¼ºµÉ GUI(°ÔÀÓ ¸ğµå¿¡ µû¸¥ Âü°¡)
+    // ê²Œì„ ì‹œì‘ë  ë•Œ ìƒì„±ë  GUI(ê²Œì„ ëª¨ë“œì— ë”°ë¥¸ ì°¸ê°€)
     private void OnGUI()
     {
         if (runner == null)
@@ -135,7 +98,7 @@ public class NetworkSpawner : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // »ç¿ë ¾ÈÇÔ ==========================================================
+    // ì‚¬ìš© ì•ˆí•¨ ==========================================================
     public void OnConnectedToServer(NetworkRunner runner)
     {
     }
