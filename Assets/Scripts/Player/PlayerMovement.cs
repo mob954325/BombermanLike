@@ -2,26 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Fusion.Addons.Physics;
 
 /// <summary>
 /// 플레이어 움직임 클래스
 /// </summary>
 public class PlayerMovement : NetworkBehaviour
 {
-    public float moveSpeed = 5f;
+    NetworkCharacterController characterController;
 
-    NetworkCharacterController networkCharacterController;
+    public Vector2Int currentGrid;
+    public float moveSpeed = 5f;
 
     private void Awake()
     {
-        networkCharacterController = GetComponent<NetworkCharacterController>();
+        characterController = GetComponent<NetworkCharacterController>();
+    }
+
+    public override void Spawned()
+    {
+        currentGrid = Util.WorldToGrid(transform.position);
     }
 
     public override void FixedUpdateNetwork()
     {
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
-            networkCharacterController.Move(Runner.DeltaTime * moveSpeed * data.direction);
+            characterController.Move(moveSpeed * Runner.DeltaTime * data.direction);
         }
+
+        currentGrid = Util.WorldToGrid(transform.position);
     }
 }

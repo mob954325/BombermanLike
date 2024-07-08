@@ -13,7 +13,7 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
     /// <summary>
     /// 플레이어 방향 값
     /// </summary>
-    private Vector3 playerInputDir;
+    [SerializeField]private Vector3 playerInputDir;
 
     private void Awake()
     {
@@ -44,6 +44,11 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
     {
         Vector2 inputVec = context.ReadValue<Vector2>();
         playerInputDir = new Vector3(inputVec.x, 0, inputVec.y);
+
+        if(playerInputDir.sqrMagnitude > 1) // 1이상, 대각선 방향
+        {
+            playerInputDir = new Vector3(inputVec.x, 0, 0); // 좌우만 움직이기
+        }
     }
 
     public override void Spawned() // 스폰 되었을 때 실행

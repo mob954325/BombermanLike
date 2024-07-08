@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 6517363061877518590}
   - component: {fileID: 8309361528557068209}
   - component: {fileID: 4363975329501503293}
+  - component: {fileID: 7065090931994621213}
   - component: {fileID: 6663137624079374362}
-  - component: {fileID: -8847314413024081744}
-  - component: {fileID: 5184891136851027860}
+  - component: {fileID: -5834771920139854960}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -64,6 +64,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093065112a021a54986e10fba0a62ac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentGrid: {x: 0, y: 0}
   moveSpeed: 5
 --- !u!114 &4363975329501503293
 MonoBehaviour:
@@ -77,6 +78,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a73d9e228e7d68b49b3ac88f73bf168c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInputDir: {x: 0, y: 0, z: 0}
+--- !u!114 &7065090931994621213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071137036366301513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravity: -20
+  jumpImpulse: 8
+  acceleration: 10
+  braking: 10
+  maxSpeed: 2
+  rotationSpeed: 360
 --- !u!114 &6663137624079374362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,26 +117,8 @@ MonoBehaviour:
   - {fileID: 6517363061877518590}
   - {fileID: 8309361528557068209}
   - {fileID: 4363975329501503293}
-  - {fileID: -8847314413024081744}
---- !u!114 &-8847314413024081744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1071137036366301513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 10
-  braking: 10
-  maxSpeed: 2
-  rotationSpeed: 15
---- !u!143 &5184891136851027860
+  - {fileID: 7065090931994621213}
+--- !u!143 &-5834771920139854960
 CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -153,7 +155,6 @@ GameObject:
   - component: {fileID: 6318513411692723582}
   - component: {fileID: 9026637556339890572}
   - component: {fileID: 7792233754701042727}
-  - component: {fileID: 5632865245568589800}
   m_Layer: 0
   m_Name: Front
   m_TagString: Untagged
@@ -226,29 +227,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &5632865245568589800
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6527537516025582286}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6593566427517244569
 GameObject:
   m_ObjectHideFlags: 0
