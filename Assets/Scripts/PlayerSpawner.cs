@@ -59,7 +59,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         if(runner.IsServer)
         {
-            Vector3 spawnPosition = new Vector3(player.RawEncoded % runner.Config.Simulation.PlayerCount, 0, 0);
+            Vector3 spawnPosition = new Vector3(player.RawEncoded % runner.Config.Simulation.PlayerCount * 3, 1, 0);
             NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
 
             spawnedPlayers.Add(player, networkPlayerObject);
