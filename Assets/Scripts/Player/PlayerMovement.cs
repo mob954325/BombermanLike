@@ -10,13 +10,33 @@ using Fusion.Addons.Physics;
 public class PlayerMovement : NetworkBehaviour
 {
     NetworkCharacterController characterController;
+    PlayerBehaviour playerBehaviour;
 
+    /// <summary>
+    /// 폭탄 설치 버튼 딜레이 타이머
+    /// </summary>
+    [Networked]
+    private TickTimer setBombDelay { get; set; }
+
+    /// <summary>
+    /// 플레이어 현재 그리드 위치값
+    /// </summary>
     public Vector2Int currentGrid;
+
+    /// <summary>
+    /// 움직임 속도
+    /// </summary>
     public float moveSpeed = 5f;
+
+    /// <summary>
+    /// 폭탄 설치 딜레이 시간
+    /// </summary>
+    public float setBombDelayTime = 0.5f;
 
     private void Awake()
     {
         characterController = GetComponent<NetworkCharacterController>();
+        playerBehaviour = GetComponent<PlayerBehaviour>();
     }
 
     public override void Spawned()
@@ -26,9 +46,19 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        if (!HasStateAuthority)
+            return;
+
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
             characterController.Move(moveSpeed * Runner.DeltaTime * data.direction);
+        }
+
+        if(data.buttons.IsSet(PlayerButtons.Attack) && setBombDelay.ExpiredOrNotRunning(Runner)) // 공격 버튼 눌렀는지 확인
+        {
+            setBombDelay = TickTimer.CreateFromSeconds(Runner, setBombDelayTime);
+            playerBehaviour.SetBomb();
+            Debug.Log("PlayerMovemnet : 폭탄 설치");
         }
 
         currentGrid = Util.WorldToGrid(transform.position);

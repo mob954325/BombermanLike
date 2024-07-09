@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "SetBomb",
+                    "name": "Attack",
                     "type": "Button",
                     "id": "99d42043-753a-4f1f-95f5-15b6521fd6e9",
                     "expectedControlType": "Button",
@@ -87,7 +87,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SetBomb",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

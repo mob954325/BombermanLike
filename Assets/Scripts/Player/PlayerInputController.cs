@@ -13,7 +13,12 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
     /// <summary>
     /// 플레이어 방향 값
     /// </summary>
-    [SerializeField]private Vector3 playerInputDir;
+    [SerializeField]private Vector3 playerInputDir = Vector3.zero;
+
+    /// <summary>
+    /// check isPressed space Button (SetBomb)
+    /// </summary>
+    private bool isPressedSpace = false;
 
     private void Awake()
     {
@@ -30,11 +35,14 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         playerInputAction.Player.Enable();
         playerInputAction.Player.Move.performed += OnMoveInput;
         playerInputAction.Player.Move.canceled += OnMoveInput;
+        playerInputAction.Player.Attack.performed += OnAttackInput;
+        playerInputAction.Player.Attack.canceled += OnAttackInput;
     }
-
 
     private void OnPlayerEnable()
     {
+        playerInputAction.Player.Attack.canceled -= OnAttackInput;
+        playerInputAction.Player.Attack.performed -= OnAttackInput;
         playerInputAction.Player.Move.canceled -= OnMoveInput;
         playerInputAction.Player.Move.performed -= OnMoveInput;
         playerInputAction.Player.Disable();
@@ -51,6 +59,11 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    private void OnAttackInput(InputAction.CallbackContext context) // Space
+    {
+        isPressedSpace = context.performed;
+    }
+
     public override void Spawned() // 스폰 되었을 때 실행
     {
         if(Object.HasInputAuthority)
@@ -65,6 +78,7 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         PlayerInputData inputData = new PlayerInputData();
 
         inputData.direction = playerInputDir;
+        inputData.buttons.Set(PlayerButtons.Attack, isPressedSpace);
         input.Set(inputData);
     }
 

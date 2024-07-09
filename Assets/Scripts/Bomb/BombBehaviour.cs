@@ -14,23 +14,35 @@ public class BombBehaviour : NetworkBehaviour
     [Networked]
     private TickTimer bombTimer { get; set; }
 
-    public float timeToExplosion = 2f;
+    public float timeToExplosion = 3f;
 
     private void Awake()
     {
         netObject = GetComponent<NetworkObject>();
     }
 
+    /// <summary>
+    /// 폭탄 초기화 함수
+    /// </summary>
+    public void Init()
+    {
+        //Debug.Log("폭탄 생성");
+        gameObject.name = $"Bomb_{Id}";
+    }
+
     public override void Spawned()
     {
+        if (Object.HasStateAuthority == false)
+            return;
+
         bombTimer = TickTimer.CreateFromSeconds(Runner, timeToExplosion);
     }
 
     public override void FixedUpdateNetwork()
     {
-        if(!bombTimer.Expired(Runner))
-        {
-            Despawned(Runner, true);
-        }
+        if (bombTimer.Expired(Runner) == false)
+            return;
+        
+        Runner.Despawn(Object);        
     }
 }
