@@ -1,10 +1,11 @@
+using Fusion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TestBase : MonoBehaviour
+public class TestBase : NetworkBehaviour
 {
     public int seed = -1;
     const int allRandom = -1;
