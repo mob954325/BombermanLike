@@ -622,6 +622,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2008252934}
   - component: {fileID: 2008252935}
+  - component: {fileID: 2008252936}
   m_Layer: 0
   m_Name: Test_01_PlayerInput
   m_TagString: Untagged
@@ -658,6 +659,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seed: -1
   gizmoLength: 8
+--- !u!114 &2008252936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008252933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 2288292247
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 2008252935}
 --- !u!1001 &6656589726409530219
 PrefabInstance:
   m_ObjectHideFlags: 0
