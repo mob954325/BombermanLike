@@ -19,11 +19,6 @@ public class PlayerMovement : NetworkBehaviour
     private TickTimer setBombDelay { get; set; }
 
     /// <summary>
-    /// 플레이어 현재 그리드 위치값
-    /// </summary>
-    public Vector2Int currentGrid;
-
-    /// <summary>
     /// 움직임 속도
     /// </summary>
     public float moveSpeed = 5f;
@@ -37,11 +32,6 @@ public class PlayerMovement : NetworkBehaviour
     {
         characterController = GetComponent<NetworkCharacterController>();
         playerBehaviour = GetComponent<PlayerBehaviour>();
-    }
-
-    public override void Spawned()
-    {
-        currentGrid = Util.WorldToGrid(transform.position);
     }
 
     public override void FixedUpdateNetwork()
@@ -60,7 +50,5 @@ public class PlayerMovement : NetworkBehaviour
             playerBehaviour.SetBomb();
             Debug.Log("PlayerMovemnet : 폭탄 설치");
         }
-
-        currentGrid = Util.WorldToGrid(transform.position);
     }
 }

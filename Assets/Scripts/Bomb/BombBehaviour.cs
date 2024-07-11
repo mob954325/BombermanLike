@@ -11,10 +11,27 @@ public class BombBehaviour : NetworkBehaviour
     // 오브젝트 디스폰
     NetworkObject netObject;
 
+    /// <summary>
+    /// 스폰 위치 그리드값
+    /// </summary>
+    private Vector2Int spawnGrid = Vector2Int.zero;
+
+    /// <summary>
+    /// 터지는 시간 타이머
+    /// </summary>
     [Networked]
     private TickTimer bombTimer { get; set; }
 
+    /// <summary>
+    /// 터지는데 걸리는 시간
+    /// </summary>
     public float timeToExplosion = 3f;
+
+    /// <summary>
+    /// 폭발 길이 (Default : 1)
+    /// </summary>
+    [Networked]
+    private int explosionLength { get; set; }
 
     private void Awake()
     {
@@ -24,11 +41,16 @@ public class BombBehaviour : NetworkBehaviour
     /// <summary>
     /// 폭탄 초기화 함수
     /// </summary>
-    public void Init()
+    /// <param name="spawnPosition">스폰한 그리드 위치 값</param>
+    public void Init(Vector2Int spawnPosition)
     {
-        //Debug.Log("폭탄 생성");
         gameObject.name = $"Bomb_{Id}";
+        explosionLength = 1;
+
+        spawnGrid = spawnPosition;
     }
+
+    // 네트워크 함수 ===============================================================================
 
     public override void Spawned()
     {
@@ -40,9 +62,38 @@ public class BombBehaviour : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (bombTimer.Expired(Runner) == false)
-            return;
-        
-        Runner.Despawn(Object);        
+        if (bombTimer.Expired(Runner))
+        {
+            Runner.Despawn(Object);        
+        }        
+    }
+
+    // 기능 함수 ===============================================================================
+
+    /// <summary>
+    /// 폭발 위치 반환 함수
+    /// </summary>
+    /// <returns>그리드값이 저장된 Vector2Int형 리스트</returns>
+    private List<Vector2Int> GetExplosionPosition()
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        for(int i = 1; i < explosionLength + 1; i++)
+        {
+            result.Add(spawnGrid + Vector2Int.up * i);
+            result.Add(spawnGrid + Vector2Int.down * i);
+            result.Add(spawnGrid + Vector2Int.left * i);
+            result.Add(spawnGrid + Vector2Int.right * i);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 폭발 길이 추가하는 함수
+    /// </summary>
+    public void IncreaseExplosionLength()
+    {
+        explosionLength++;
     }
 }

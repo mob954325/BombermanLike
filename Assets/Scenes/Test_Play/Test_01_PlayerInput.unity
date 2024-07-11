@@ -623,7 +623,7 @@ GameObject:
   - component: {fileID: 2008252934}
   - component: {fileID: 2008252935}
   m_Layer: 0
-  m_Name: Test_02_Bomb
+  m_Name: Test_01_PlayerInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

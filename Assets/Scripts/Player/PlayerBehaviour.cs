@@ -10,6 +10,26 @@ public class PlayerBehaviour : NetworkBehaviour
     /// </summary>
     public BombBehaviour bombPrefab;
 
+    /// <summary>
+    /// 플레이어 현재 그리드 위치값
+    /// </summary>
+    private Vector2Int currentGrid;
+
+    /// <summary>
+    /// 플레이어 현재 그리드 위치값 접근 및 수정용 프로퍼티
+    /// </summary>
+    public Vector2Int CurrnetGrid
+    {
+        get => currentGrid;
+        set
+        {
+            if(currentGrid != value)
+            {
+                currentGrid = value;
+            }
+        }
+    }
+
     [Networked] 
     public int playerId { get; set; }
 
@@ -27,7 +47,7 @@ public class PlayerBehaviour : NetworkBehaviour
             Object.InputAuthority,
             (runner, o) =>
             {
-                o.GetComponent<BombBehaviour>().Init();
+                o.GetComponent<BombBehaviour>().Init(CurrnetGrid);
             });
     }
 }

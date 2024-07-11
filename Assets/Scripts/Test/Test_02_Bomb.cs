@@ -19,7 +19,7 @@ public class Test_02_Bomb : TestBase
                 Object.InputAuthority,
                 (runner, o) =>
                 {
-                    o.GetComponent<BombBehaviour>().Init();
+                    o.GetComponent<BombBehaviour>().Init(Util.WorldToGrid(target.position));
                 });
     }
 }
