@@ -45,11 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81120c95d35c3a34f8278ace2419de9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floor: {fileID: 6473808943297569146, guid: 09926244d42653d4ead01aadc7ca599e, type: 3}
-  wall: {fileID: 4734922384498419072, guid: b7e3055820911e44a85fd0cfdb4849f8, type: 3}
+  floor:
+    RawGuidValue: 09926244d42653d4ead01aadc7ca599e
+  wall:
+    RawGuidValue: b7e3055820911e44a85fd0cfdb4849f8
   block:
-  - {fileID: 49572436106060000, guid: 40ae7e041d86baa47bbf8e16e5c94764, type: 3}
-  - {fileID: 8800066099432834374, guid: bb7f4a286f852314083950ab44dc5101, type: 3}
+  - RawGuidValue: 40ae7e041d86baa47bbf8e16e5c94764
+  - RawGuidValue: bb7f4a286f852314083950ab44dc5101
 --- !u!114 &4718727705666355099
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -46,3 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab:
     RawGuidValue: d81fe3376e8a0d041ad88925e1c4e142
+  boardPrefab:
+    RawGuidValue: ee2cd883398a3dc41966c7c191fc4b37

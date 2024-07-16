@@ -23,6 +23,9 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField]
     private NetworkPrefabRef playerPrefab;
 
+    [SerializeField]
+    private NetworkPrefabRef boardPrefab;
+
     /// <summary>
     /// 플레이어 딕셔너리 (생성된 플레이어 관리용)
     /// </summary>
@@ -52,6 +55,16 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
     }
+    
+    public void CreateBoard()
+    {
+        if(runner.IsServer)
+        {
+            NetworkObject networkBoardObject = runner.Spawn(boardPrefab, Vector3.zero, Quaternion.identity, null);    // 보드 생성
+            Board board = networkBoardObject.GetComponent<Board>(); // 보드 컴포넌트 접근
+            board.GenerateBoard();
+        }
+    }
 
     // 네트워크 콜백 함수 ==================================================
 
@@ -64,6 +77,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
             spawnedPlayers.Add(player, networkPlayerObject);
         }
+        CreateBoard();
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
