@@ -40,7 +40,7 @@ public class PlayerData : NetworkBehaviour
         nickName = nick;
     }
 
-    public override void Spawned()
+    public override void Spawned() // 스폰 함수
     {
         playerChangeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState, false); // 네트워크 변수 변경 감지 시작
         if(Object.HasInputAuthority)
@@ -59,7 +59,7 @@ public class PlayerData : NetworkBehaviour
         }
     }
 
-    public override void Render()
+    public override void Render() // Unity Update 대신 사용하는 Fusion 물리처리 함수
     {
         foreach(var change in playerChangeDetector.DetectChanges(this)) // 현재 클래스에서 변화가 발생하면
         {
