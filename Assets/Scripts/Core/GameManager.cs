@@ -22,5 +22,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public FusionEvent OnRunnerShutDownEvent;
 
-    //private Dictionary<PlayerRef/*, PlayerData*/> playerDatas = 
+    private Dictionary<PlayerRef, PlayerData> playerDatas = new Dictionary<PlayerRef, PlayerData>();
+
+    /// <summary>
+    /// 게임 상태 enum
+    /// </summary>
+    public enum GameState
+    {
+        Lobby = 0,
+        Playing,
+        Loading
+    }
+
+    public GameState state { get; private set; }
+
 }
