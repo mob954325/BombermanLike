@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c0547e66e792a49a3b4aa5542332f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 0}
 --- !u!114 &5504409467033259563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,5 +61,4 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 131073
   NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 394239537658445487}
+  NetworkedBehaviours: []

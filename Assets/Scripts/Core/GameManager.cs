@@ -2,24 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using FusionUtilsEvents;
 using Fusion;
 
-public class GameManager : NetworkBehaviour
+public class GameManager : MonoBehaviour
 {
+    // 게임 메니저가 해야할 일은?
+
+    // 게임 매니저 싱글톤
     public static GameManager instance;
 
-    private void Awake()
-    {
-        instance = this;
-    }
+    /// <summary>
+    /// 플레이어 퇴장 이벤트 (FusionEvent)
+    /// </summary>
+    public FusionEvent OnPlayerLeftEvent;
 
-    public void Init()
-    {
+    /// <summary>
+    /// 러너 종료 이벤트 (FusionEvent)??
+    /// </summary>
+    public FusionEvent OnRunnerShutDownEvent;
 
-    }    
-
-    public override void Spawned()
-    {
-
-    }
+    //private Dictionary<PlayerRef/*, PlayerData*/> playerDatas = 
 }
