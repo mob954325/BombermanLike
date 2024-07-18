@@ -54,6 +54,8 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
+
+        CreateBoard();
     }
     
     public void CreateBoard()
@@ -77,7 +79,6 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
             spawnedPlayers.Add(player, networkPlayerObject);
         }
-        CreateBoard();
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
