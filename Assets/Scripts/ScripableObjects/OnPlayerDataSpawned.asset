@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd7465b9f26e2504984b3ccad0116ae6, type: 3}
-  m_Name: Start
+  m_Name: OnPlayerDataSpawned
   m_EditorClassIdentifier: 
