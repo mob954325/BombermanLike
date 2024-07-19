@@ -1,9 +1,11 @@
 using System.Collections;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FusionUtilsEvents;
 using Fusion;
+using System.Runtime.InteropServices;
 
 public class GameManager : MonoBehaviour
 {
@@ -124,12 +126,35 @@ public class GameManager : MonoBehaviour
         playerDatas.Remove(player);
     }
 
+    /// <summary>
+    /// 세션에서 연결 해제하는 함수
+    /// </summary>
+    /// <param name="player">플레이어</param>
+    /// <param name="runner">러너</param>
     public void DisconnectedFromSession(PlayerRef player, NetworkRunner runner)
     {
         Debug.Log("Disconneted from the session");
         ExitSession();
     }
+    
+    public void LeaveRoom()
+    {
 
+    }
+    
+    private async Task LeaveRoomAsync()
+    {
+        await ShutDownRunner();
+    }
+
+    private async Task ShutDownRunner()
+    {
+        // 셧다운 내용
+    }
+
+    /// <summary>
+    /// 세션 퇴장 함수
+    /// </summary>
     public void ExitSession()
     {
         SceneManager.LoadScene(0);
