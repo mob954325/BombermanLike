@@ -42,7 +42,6 @@ public class LobbyCanvas : MonoBehaviour
 
     public void ExitGame()
     {
-        // 종료
     }
 
     public void LeaveLobby()

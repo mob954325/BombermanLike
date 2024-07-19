@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using FusionUtilsEvents;
-using WebSocketSharp;
 
 /// <summary>
 /// 플레이어 데이터 클래스 (NetworkBehaviour)
