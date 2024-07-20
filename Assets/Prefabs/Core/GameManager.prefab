@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5979111297001014211}
   - component: {fileID: 394239537658445487}
+  - component: {fileID: 3756547647983121728}
+  - component: {fileID: 5958373903337509140}
   - component: {fileID: 5504409467033259563}
   m_Layer: 0
   m_Name: GameManager
@@ -45,6 +47,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c0547e66e792a49a3b4aa5542332f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelManager: {fileID: 3756547647983121728}
+  exitScreen: {fileID: 0}
+  OnPlayerLeftEvent: {fileID: 11400000, guid: 26d958c1b0aec0d43a13e40de855ccab, type: 2}
+  OnRunnerShutDownEvent: {fileID: 11400000, guid: f227789f51ed2c7449729e00f174e57f, type: 2}
+--- !u!114 &3756547647983121728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5350759530806014045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e811eccb1fe1e4481060984f7c1c51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsSceneTakeOverEnabled: 1
+  LogSceneLoadErrors: 1
+  Launcher: {fileID: 0}
+  loadingManager: {fileID: 0}
+--- !u!114 &5958373903337509140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5350759530806014045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 062569f4c68cee24d94e6a820c748e3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LauncherPrefab: {fileID: 3944013519960838533, guid: f547ebde4fa7fdb42acd5af6ce278c1c, type: 3}
 --- !u!114 &5504409467033259563
 MonoBehaviour:
   m_ObjectHideFlags: 0

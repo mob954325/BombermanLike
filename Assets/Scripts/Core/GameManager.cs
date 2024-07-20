@@ -15,14 +15,10 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     /// <summary>
-    /// 플레이어 퇴장 이벤트 (FusionEvent)
+    /// 레벨 매니저
     /// </summary>
-    public FusionEvent OnPlayerLeftEvent;
+    public LevelManager levelManager;
 
-    /// <summary>
-    /// 러너 종료 이벤트 (FusionEvent)??
-    /// </summary>
-    public FusionEvent OnRunnerShutDownEvent;
 
     /// <summary>
     /// 플레이어 데이터 딕셔너리 (플레이어 저장용)
@@ -44,7 +40,19 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// 나가기 패널 UI (게임 진행중일 때 게임에서 나가기 위한 UI)
     /// </summary>
-    private GameObject exitScreen;
+    [SerializeField] private GameObject exitScreen;
+
+    [Space]
+
+    /// <summary>
+    /// 플레이어 퇴장 이벤트 (FusionEvent)
+    /// </summary>
+    public FusionEvent OnPlayerLeftEvent;
+
+    /// <summary>
+    /// 러너 종료 이벤트 (FusionEvent)??
+    /// </summary>
+    public FusionEvent OnRunnerShutDownEvent;
 
     private void Awake()
     {
@@ -102,6 +110,10 @@ public class GameManager : MonoBehaviour
     public void AllowAllPlayersInputs()
     {
         // 모든 플레이어 인풋 허가
+        foreach(PlayerBehaviour behaviour in FindObjectsOfType<PlayerBehaviour>())
+        {
+            behaviour.SetInputsAllowed(true);
+        }
     }
 
     /// <summary>
@@ -139,7 +151,7 @@ public class GameManager : MonoBehaviour
     
     public void LeaveRoom()
     {
-
+        _ = LeaveRoomAsync();
     }
     
     private async Task LeaveRoomAsync()
@@ -150,6 +162,9 @@ public class GameManager : MonoBehaviour
     private async Task ShutDownRunner()
     {
         // 셧다운 내용
+        await FusionHelper.LocalRunner?.Shutdown();
+        SetGameState(GameState.Lobby);
+        playerDatas.Clear();
     }
 
     /// <summary>
@@ -157,6 +172,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ExitSession()
     {
+        _ = ShutDownRunner();
+        levelManager.ResetLoadedScene();
         SceneManager.LoadScene(0);
         exitScreen.SetActive(false);
     }
@@ -166,6 +183,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ExitGame()
     {
+        _ = ShutDownRunner();
         Application.Quit();
     }
 }

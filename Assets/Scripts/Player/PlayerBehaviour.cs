@@ -37,6 +37,12 @@ public class PlayerBehaviour : NetworkBehaviour
     public Color playerColor { get; set; }
 
     /// <summary>
+    /// 입력 허가 체크 변수
+    /// </summary>
+    [Networked]
+    private bool InputsAllowed { get; set; }
+
+    /// <summary>
     /// 폭탄 설치하는 함수
     /// </summary>
     public void SetBomb()
@@ -49,5 +55,14 @@ public class PlayerBehaviour : NetworkBehaviour
             {
                 o.GetComponent<BombBehaviour>().Init(CurrnetGrid);
             });
+    }
+
+    /// <summary>
+    /// 인풋 입력 허가 설정 함수
+    /// </summary>
+    /// <param name="value">true : 허가 , false 비허가</param>
+    public void SetInputsAllowed(bool value)
+    {
+        InputsAllowed = value;
     }
 }
