@@ -20,7 +20,7 @@ public class LobbyCanvas : MonoBehaviour
     /// <summary>
     /// 플레이어 퇴장 이벤트 (FusionEvent)
     /// </summary>
-    public FusionEvent OnPlayerLeaveEvent;
+    public FusionEvent OnPlayerLeftEvent;
 
     /// <summary>
     /// 프로그램 종료 이벤트 (FusionEvent)

@@ -1409,6 +1409,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 394239537658445487, guid: 64bc1d846d4a01c4caa8e38df9d473a8, type: 3}
+      propertyPath: OnPlayerLeftEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 26d958c1b0aec0d43a13e40de855ccab, type: 2}
+    - target: {fileID: 394239537658445487, guid: 64bc1d846d4a01c4caa8e38df9d473a8, type: 3}
+      propertyPath: OnRunnerShutDownEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: f227789f51ed2c7449729e00f174e57f, type: 2}
     - target: {fileID: 5350759530806014045, guid: 64bc1d846d4a01c4caa8e38df9d473a8, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -2500,7 +2508,7 @@ GameObject:
   - component: {fileID: 1363969531}
   - component: {fileID: 1363969532}
   m_Layer: 5
-  m_Name: RoomScreen
+  m_Name: LobbyScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

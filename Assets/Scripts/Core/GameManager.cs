@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 public class GameManager : MonoBehaviour
 {
-    // 게임 메니저가 해야할 일은?
+    // 게임 메니저가 해야할 일은?  
 
     // 게임 매니저 싱글톤
     public static GameManager instance;
