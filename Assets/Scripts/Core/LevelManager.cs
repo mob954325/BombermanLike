@@ -12,10 +12,12 @@ public class LevelManager : NetworkSceneManagerDefault
     public FusionLauncher Launcher;
     [SerializeField] private LoadingManager loadingManager;
 
-    public void ResetLoadedScene()
-    {
-    }
+    /// <summary>
+    /// 로드 씬 초기화 함수 ( 빈 함수 )
+    /// </summary>
+    public void ResetLoadedScene() { }
 
+    // Fusion의 로딩 씬 코루틴 ( 씬 전환시 실행되는 코루틴 함수 )
     protected override IEnumerator LoadSceneCoroutine(SceneRef sceneRef, NetworkLoadSceneParameters sceneParams)
     {
         loadingManager.StartLoadingScreen();
@@ -27,4 +29,6 @@ public class LevelManager : NetworkSceneManagerDefault
         yield return new WaitForSeconds(1f);
         loadingManager.FinishLoadingScreen();                                       // 로딩 스크린 애니메이션 종료
     }
+
+
 }

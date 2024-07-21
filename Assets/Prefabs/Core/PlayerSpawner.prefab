@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7278216373204637746}
   - component: {fileID: 2753885828764792406}
   m_Layer: 0
-  m_Name: NetworkSpawner
+  m_Name: PlayerSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

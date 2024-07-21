@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
+/// <summary>
+/// 플레이어 행동 클래스
+/// </summary>
 public class PlayerBehaviour : NetworkBehaviour
 {
     /// <summary>
@@ -30,11 +33,17 @@ public class PlayerBehaviour : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어 고유 Id
+    /// </summary>
     [Networked] 
-    public int playerId { get; set; }
+    public int id { get; set; }
 
+    /// <summary>
+    /// 오브젝트 색깔
+    /// </summary>
     [Networked]
-    public Color playerColor { get; set; }
+    public Color objColor { get; set; }
 
     /// <summary>
     /// 입력 허가 체크 변수
@@ -64,5 +73,11 @@ public class PlayerBehaviour : NetworkBehaviour
     public void SetInputsAllowed(bool value)
     {
         InputsAllowed = value;
+    }
+
+    public void Init(int playerId, Color color)
+    {
+        id = playerId;
+        objColor = color;
     }
 }
