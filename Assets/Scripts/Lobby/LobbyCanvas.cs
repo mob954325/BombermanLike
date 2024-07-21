@@ -116,6 +116,8 @@ public class LobbyCanvas : MonoBehaviour
         // 게임 시작
         FusionHelper.LocalRunner.SessionInfo.IsOpen = false;
         FusionHelper.LocalRunner.SessionInfo.IsVisible = false;
+        // 플레이 씬 연결
+        LoadingManager.Instance.LoadPlayLevel(FusionHelper.LocalRunner);
     }
 
     private async Task LeaveLobbyAsync()

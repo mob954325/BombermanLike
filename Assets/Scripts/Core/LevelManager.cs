@@ -11,11 +11,9 @@ public class LevelManager : NetworkSceneManagerDefault
 {
     public FusionLauncher Launcher;
     [SerializeField] private LoadingManager loadingManager;
-    private Scene loadedScene;
 
     public void ResetLoadedScene()
     {
-        loadedScene = default; // ?
     }
 
     protected override IEnumerator LoadSceneCoroutine(SceneRef sceneRef, NetworkLoadSceneParameters sceneParams)

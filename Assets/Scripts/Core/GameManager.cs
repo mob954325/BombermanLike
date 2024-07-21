@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using FusionUtilsEvents;
 using Fusion;
-using System.Runtime.InteropServices;
 
 public class GameManager : MonoBehaviour
 {
@@ -60,6 +59,8 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
+
+        DontDestroyOnLoad(transform.parent);
     }
 
     private void OnEnable()

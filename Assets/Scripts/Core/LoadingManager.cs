@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
 public class LoadingManager : MonoBehaviour
 {
@@ -15,7 +16,12 @@ public class LoadingManager : MonoBehaviour
             Instance = this;
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
+    }
+
+    public void LoadPlayLevel(NetworkRunner runner)
+    {
+        runner.LoadScene("GamePlay");
     }
 
     /// <summary>
