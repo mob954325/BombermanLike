@@ -24,7 +24,11 @@ public class Board : NetworkBehaviour
     /// </summary>
     private bool isGenerated = false;
 
-    public void GenerateBoard()
+    /// <summary>
+    /// 보드 생성 함수
+    /// </summary>
+    /// <param name="runner">로컬 러너</param>
+    public void GenerateBoard(NetworkRunner runner)
     {
         if (isGenerated) return;
 
@@ -40,8 +44,8 @@ public class Board : NetworkBehaviour
         {
             for (int x = 0; x < boardSize; x++)
             {
-                CreateCell(CellType.Floor, floor, new Vector3(x, 0, y), $"Floor {x}_{y}", Floors.transform);            // 바닥 생성
-                CreateCell(CellType.Breakable, block[0], new Vector3(x, 1, y), $"Block {x}_{y}", Blocks.transform);     // 장애물 생성
+                CreateCell(runner, CellType.Floor, floor, new Vector3(x, 0, y), $"Floor {x}_{y}", Floors.transform);            // 바닥 생성
+                CreateCell(runner, CellType.Breakable, block[0], new Vector3(x, 1, y), $"Block {x}_{y}", Blocks.transform);     // 장애물 생성
             }
         }
 
@@ -51,7 +55,7 @@ public class Board : NetworkBehaviour
         for (int i = 0; i < outLinePositions.Length * 2; i++)
         {
             // 4방향 코너 생성
-            CreateCell(CellType.Wall, wall,
+            CreateCell(runner, CellType.Wall, wall,
                         new Vector3(outLinePositions[i % 2], 0, outLinePositions[(i + k) % 2]),
                         $"Wall_Cornor_{i}",
                         Walls.transform);
@@ -61,7 +65,7 @@ public class Board : NetworkBehaviour
                 if (i < 2)
                 {
                     // 왼쪽 오른쪽
-                    CreateCell(CellType.Wall, block[0],
+                    CreateCell(runner, CellType.Wall, block[0],
                                 new Vector3(outLinePositions[i % 2], 0, j),
                                 $"Wall_Vertical_{outLinePositions[i % 2]}_{j}",
                                 Walls.transform);
@@ -69,7 +73,7 @@ public class Board : NetworkBehaviour
                 else
                 {
                     // 위 아래
-                    CreateCell(CellType.Wall, block[0],
+                    CreateCell(runner, CellType.Wall, block[0],
                                 new Vector3(j, 0, outLinePositions[i % 2]),
                                 $"Wall_Horizontal_{outLinePositions[i % 2]}_{j}",
                                 Walls.transform);
@@ -85,16 +89,22 @@ public class Board : NetworkBehaviour
     /// <summary>
     /// 맵의 Cell을 생성하는 함수
     /// </summary>
+    /// <param name="runner">로컬 러너</param>
     /// <param name="type">셀 타입</param>
-    /// <param name="obj">프리팹 오브젝트</param>
+    /// <param name="cellPrefab">프리팹 오브젝트</param>
     /// <param name="position">위치</param>
     /// <param name="name">오브젝트 이름 (없으면 정해진 이름 설정)</param>
     /// <param name="parent">오브젝트 부모 (없으면 null)</param>
-    private void CreateCell(CellType type, NetworkPrefabRef obj, Vector3 position, string name = "Cell_Unknown", Transform parent = null)
+    private void CreateCell(NetworkRunner runner, CellType type, NetworkPrefabRef cellPrefab, Vector3 position, string name = "Cell_Unknown", Transform parent = null)
     {
-        Runner.Spawn(obj, position, Quaternion.identity,
-        null,
-        (Runner, o) => { o.GetComponent<Cell>().Init(type, name, parent); }
-        );
+        runner.Spawn
+            (cellPrefab, 
+            position,
+            Quaternion.identity, 
+            Object.InputAuthority, // error
+            (runner, o) => 
+            {
+                o.GetComponent<Cell>().Init(type, name, parent); 
+            });
     }
 }

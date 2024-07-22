@@ -27,14 +27,20 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     /// </summary>
     private Vector3 spawnPosition = Vector3.zero;
     
-    public void SpawnAllPlayer(NetworkRunner runner)
+    /// <summary>
+    /// 플레이어 스폰 함수
+    /// </summary>
+    /// <param name="runner">로컬 러너</param>
+    public void SpawnAllPlayer(NetworkRunner runner, out List<NetworkObject> playersList)
     {
+        playersList = new List<NetworkObject>();
+
         if(!runner.IsClient) // Host만 처리
         {
             foreach(var player in runner.ActivePlayers)
             {
                 string playerName = GameManager.instance.GetPlayerData(player, runner).nickName.ToString();
-                SpawnPlayer(runner, player, playerName);
+                playersList.Add(SpawnPlayer(runner, player, playerName));
             }
         }
     }
@@ -45,7 +51,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     /// <param name="runner">로컬 네트워크 러너</param>
     /// <param name="player">플레이어</param>
     /// <param name="nick">닉네임</param>
-    private void SpawnPlayer(NetworkRunner runner, PlayerRef player, string nick = "")
+    private NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef player, string nick = "")
     {
         NetworkObject playerObject = runner.Spawn
             (
@@ -55,6 +61,8 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
                 player,
                 SpawnInit
             );
+
+        return playerObject;
     }
 
     /// <summary>
@@ -63,9 +71,13 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     private void SpawnInit(NetworkRunner runner, NetworkObject obj)
     {
         PlayerBehaviour playerBehaviour = obj.GetComponent<PlayerBehaviour>();
-        playerBehaviour.Init(runner.LocalPlayer.PlayerId, SetColor());
+        playerBehaviour.Init(SetColor());
     }
 
+    /// <summary>
+    /// 색상 랜덤 함수
+    /// </summary>
+    /// <returns>랜덤 색상 값</returns>
     private Color SetColor()
     {
         return new Color
