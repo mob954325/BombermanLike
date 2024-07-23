@@ -16,7 +16,7 @@ public class PlayerBehaviour : NetworkBehaviour
     /// <summary>
     /// 플레이어 모델 머터리얼
     /// </summary>
-    private Material bodyMaterial;
+    [SerializeField] private Material bodyMaterial;
 
     private ChangeDetector changeDetector;
 
@@ -43,7 +43,8 @@ public class PlayerBehaviour : NetworkBehaviour
     /// <summary>
     /// 오브젝트 색깔
     /// </summary>
-    public Color objColor;
+    [Networked]
+    public Color objColor { get; set; }
 
     /// <summary>
     /// 입력 허가 체크 변수
@@ -84,7 +85,7 @@ public class PlayerBehaviour : NetworkBehaviour
             }
         }
 
-        bodyMaterial.color = Color.Lerp(bodyMaterial.color, Color.blue, Time.deltaTime);
+        bodyMaterial.color = Color.Lerp(bodyMaterial.color, objColor, Time.deltaTime);
     }
 
     // 기능 함수 =================================================================================
@@ -113,16 +114,18 @@ public class PlayerBehaviour : NetworkBehaviour
         InputsAllowed = value;
     }
 
-    public void Init(Color color)
-    {
-        objColor = color;
-    }
-
     /// <summary>
     /// 스폰 여부(isSpawed) true로 변경하는 함수
     /// </summary>
     public void SetIsSpawnedTrue()
     {
         isSpawed = true;
+    }
+
+    public void InitBeforeSpawn()
+    {
+        objColor = new Color(Random.value, Random.value, Random.value);
+        isSpawed = true;
+        Debug.Log("색 선정 완료");
     }
 }

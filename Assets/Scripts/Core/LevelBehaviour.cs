@@ -8,7 +8,7 @@ using Fusion;
 /// </summary>
 public class LevelBehaviour : NetworkBehaviour
 {
-    List<NetworkObject> playerObjs = new List<NetworkObject>();
+    public List<NetworkObject> playerObjs = new List<NetworkObject>();
 
     // Fusion 함수 ===============================================================================
 
@@ -17,6 +17,13 @@ public class LevelBehaviour : NetworkBehaviour
     {
         //CreateBoard();
         SpawnPlayerFromSpawner();
+
+        foreach (var player in playerObjs)
+        {
+            PlayerBehaviour playerBehaviour = player.GetComponent<PlayerBehaviour>();
+            playerBehaviour.InitBeforeSpawn();
+
+        }
     }
 
     /// <summary>
@@ -30,8 +37,6 @@ public class LevelBehaviour : NetworkBehaviour
         foreach(var player in list)
         {
             playerObjs.Add(player);
-            PlayerBehaviour playerBehaviour = player.GetComponent<PlayerBehaviour>();
-            playerBehaviour.SetIsSpawnedTrue();
         }
     }
 

@@ -66,26 +66,12 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     /// <summary>
-    /// 스폰 초기화 함수
+    /// 스폰 초기화 함수 (호스트에서만 처리)
     /// </summary>
     private void SpawnInit(NetworkRunner runner, NetworkObject obj)
     {
         PlayerBehaviour playerBehaviour = obj.GetComponent<PlayerBehaviour>();
-        playerBehaviour.Init(SetColor());
-    }
-
-    /// <summary>
-    /// 색상 랜덤 함수
-    /// </summary>
-    /// <returns>랜덤 색상 값</returns>
-    private Color SetColor()
-    {
-        return new Color
-            (
-                Random.value,
-                Random.value,
-                Random.value
-            );
+        // 초기화 필요하면 작성
     }
 
     #region Unused CallBacks
