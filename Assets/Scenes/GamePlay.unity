@@ -364,6 +364,8 @@ GameObject:
   m_Component:
   - component: {fileID: 498311260}
   - component: {fileID: 498311261}
+  - component: {fileID: 498311263}
+  - component: {fileID: 498311262}
   m_Layer: 0
   m_Name: Local_Board
   m_TagString: Untagged
@@ -403,6 +405,36 @@ MonoBehaviour:
   - RawGuidValue: 09926244d42653d4ead01aadc7ca599e
   - RawGuidValue: b7e3055820911e44a85fd0cfdb4849f8
   - RawGuidValue: 40ae7e041d86baa47bbf8e16e5c94764
+--- !u!114 &498311262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498311259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 3033640653
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 498311263}
+--- !u!114 &498311263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498311259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 2038946961, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1170511808
 GameObject:
   m_ObjectHideFlags: 0

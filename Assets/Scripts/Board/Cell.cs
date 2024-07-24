@@ -18,10 +18,12 @@ public class Cell : NetworkBehaviour
     CellType type;
 
     NetworkTransform networkTransform;
+    NetworkObject networkObject;
 
     private void Awake()
     {
         networkTransform = GetComponent<NetworkTransform>();
+        networkObject = GetComponent<NetworkObject>();
     }
 
     /// <summary>
@@ -31,13 +33,13 @@ public class Cell : NetworkBehaviour
     {
         this.type = type;
         this.gameObject.name = name;
-        transform.parent = parent;
 
+        networkTransform.transform.parent = parent;
         networkTransform.transform.localPosition = position;
     }
 
     public void GetHit()
     {
-        this.gameObject.SetActive(false);
+        networkObject.gameObject.SetActive(false);
     }
 }
