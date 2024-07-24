@@ -10,26 +10,21 @@ public class LevelBehaviour : NetworkBehaviour
 {
     public List<NetworkObject> playerObjs = new List<NetworkObject>();
 
+    private Vector3[] spawnPosition = { new(0, 2, 0), new(0, 2, 13), new(13, 2, 0), new(13, 2, 13) };
+
     // Fusion 함수 ===============================================================================
 
     // 스폰
     public override void Spawned()
     {
-        //CreateBoard();
-        SpawnPlayerFromSpawner();
-
-        foreach (var player in playerObjs)
-        {
-            PlayerBehaviour playerBehaviour = player.GetComponent<PlayerBehaviour>();
-            playerBehaviour.InitBeforeSpawn();
-
-        }
+        CreateBoard();
+        SpawnPlayer();
     }
 
     /// <summary>
     /// 스포너에서 플레이어를 스폰하는 함수
     /// </summary>
-    private void SpawnPlayerFromSpawner()
+    private void SpawnPlayer()
     {
         PlayerSpawner spawner = FindObjectOfType<PlayerSpawner>();  // 스포너 가져오기
         spawner.SpawnAllPlayer(FusionHelper.LocalRunner, out List<NetworkObject> list);           // 모든 플레이어 스폰
@@ -37,16 +32,16 @@ public class LevelBehaviour : NetworkBehaviour
         foreach(var player in list)
         {
             playerObjs.Add(player);
+
+            PlayerBehaviour playerBehaviour = player.GetComponent<PlayerBehaviour>();
+            playerBehaviour.InitBeforeSpawn();
         }
     }
 
-    /// <summary>
-    /// 게임 보드 생성 함수
-    /// </summary>
     private void CreateBoard()
     {
-        Board board = FindObjectOfType<Board>(); // 보드 클래스 가져오기
-        board.GenerateBoard(FusionHelper.LocalRunner);
+        Board board = FindObjectOfType<Board>();
+        board.Init(FusionHelper.LocalRunner);
     }
 
     // 연결해제

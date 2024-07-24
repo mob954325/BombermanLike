@@ -3,108 +3,98 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public class Board : NetworkBehaviour
+public class Board : MonoBehaviour
 {
-    public NetworkPrefabRef floor;
-    public NetworkPrefabRef wall;
-    public NetworkPrefabRef[] block;
+    // 보드한테 필요한건?
+
+    // 1. 각 셀 오브젝트 관리
+    // 1.1 셀 생성
+    // 1.2 셀 파괴
+    [SerializeField] private Dictionary<int, Cell> cells = new Dictionary<int, Cell>();
+
+    /// <summary>
+    /// 셀 프리팹
+    /// </summary>
+    [Tooltip("셀 타입 순으로 프리팹 저장")]
+    public NetworkPrefabRef[] cellPrefab;
 
     /// <summary>
     /// 보드 크기
     /// </summary>
-    private const int boardSize = 14;
+    const int boardSize = 13;
 
     /// <summary>
-    /// 테두리 위치 배열 (시작 위치, 끝 위치 )
+    /// 보드 초기화 함수
     /// </summary>
-    private readonly int[] outLinePositions = { -1, boardSize };
-
-    /// <summary>
-    /// 생성 확인 여부
-    /// </summary>
-    private bool isGenerated = false;
-
-    /// <summary>
-    /// 보드 생성 함수
-    /// </summary>
-    /// <param name="runner">로컬 러너</param>
-    public void GenerateBoard(NetworkRunner runner)
+    public void Init(NetworkRunner runner)
     {
-        if (isGenerated) return;
+        // 0, 0 | boardsize, 0 | 0, boardsize | boardsize, boardsize
 
-        GameObject Floors = new GameObject("Floor Container");
-        GameObject Walls = new GameObject("Walls Container");
-        GameObject Blocks = new GameObject("Blocks Container");
-        Floors.transform.parent = transform;
-        Walls.transform.parent = transform;
-        Blocks.transform.parent = transform;
-
-        // 바닥 생성
-        for (int y = 0; y < boardSize; y++)
+        for(int y = 0; y < boardSize; y++)
         {
-            for (int x = 0; x < boardSize; x++)
+            for(int x = 0; x < boardSize; x++)
             {
-                CreateCell(runner, CellType.Floor, floor, new Vector3(x, 0, y), $"Floor {x}_{y}", Floors.transform);            // 바닥 생성
-                CreateCell(runner, CellType.Breakable, block[0], new Vector3(x, 1, y), $"Block {x}_{y}", Blocks.transform);     // 장애물 생성
-            }
-        }
-
-        int k = 0; // 코너 생성용 지역변수
-
-        // 벽 생성
-        for (int i = 0; i < outLinePositions.Length * 2; i++)
-        {
-            // 4방향 코너 생성
-            CreateCell(runner, CellType.Wall, wall,
-                        new Vector3(outLinePositions[i % 2], 0, outLinePositions[(i + k) % 2]),
-                        $"Wall_Cornor_{i}",
-                        Walls.transform);
-
-            for (int j = 0; j < boardSize; j++)
-            {
-                if (i < 2)
+                if(y % 2 == 1 && x % 2 == 0)
                 {
-                    // 왼쪽 오른쪽
-                    CreateCell(runner, CellType.Wall, block[0],
-                                new Vector3(outLinePositions[i % 2], 0, j),
-                                $"Wall_Vertical_{outLinePositions[i % 2]}_{j}",
-                                Walls.transform);
+                    // 가장자리를 제외한 짝수 번째 셀은 벽이다. ( y는 홀수번째 줄, x는 짝수 번째마다)
+                    CreateCell(runner, CellType.Wall, CoordinateConversion.GridToWorld(x, y));
                 }
                 else
                 {
-                    // 위 아래
-                    CreateCell(runner, CellType.Wall, block[0],
-                                new Vector3(j, 0, outLinePositions[i % 2]),
-                                $"Wall_Horizontal_{outLinePositions[i % 2]}_{j}",
-                                Walls.transform);
+                    // 플레이어 주변 한 칸을 제외하고 파괴 가능한 벽이 랜덤으로 배치된다.
+                    CreateCell(runner, CellType.Breakable, CoordinateConversion.GridToWorld(x, y));
                 }
             }
-
-            if (i == 0 || i == 2) k++;
         }
 
-        isGenerated = true;
+        //InitCells();
+    }
+
+    private void CreateCell(NetworkRunner runner, CellType type, Vector3 position)
+    {
+        NetworkObject obj = null;
+        string name = $"{type}_{position.x}_{position.z}";
+
+        if (runner.IsServer)
+        {
+            obj = runner.Spawn(cellPrefab[(int)type], position, Quaternion.identity, null,
+            (runner, o) =>
+            {
+                obj = o;
+                o.GetComponent<Cell>().Init(type, name, position + Vector3.up, this.transform);
+            });
+        }
     }
 
     /// <summary>
-    /// 맵의 Cell을 생성하는 함수
+    /// 해당 위치가 존재하는지 확인하는 함수 (grid)
     /// </summary>
-    /// <param name="runner">로컬 러너</param>
-    /// <param name="type">셀 타입</param>
-    /// <param name="cellPrefab">프리팹 오브젝트</param>
-    /// <param name="position">위치</param>
-    /// <param name="name">오브젝트 이름 (없으면 정해진 이름 설정)</param>
-    /// <param name="parent">오브젝트 부모 (없으면 null)</param>
-    private void CreateCell(NetworkRunner runner, CellType type, NetworkPrefabRef cellPrefab, Vector3 position, string name = "Cell_Unknown", Transform parent = null)
+    /// <param name="grid">그리드 좌표 값</param>
+    /// <returns>존재하면 true 아니면 false</returns>
+    private bool IsVaildGrid(Vector2Int grid)
     {
-        runner.Spawn
-            (cellPrefab, 
-            position,
-            Quaternion.identity, 
-            Object.InputAuthority, // error
-            (runner, o) => 
-            {
-                o.GetComponent<Cell>().Init(type, name, parent); 
-            });
+        return grid.x > -1 && grid.x < boardSize && grid.y > -1 && grid.y < boardSize;
+    }
+
+    // 좌표 함수 ======================================================================================
+
+    private int WorldToIndex(Vector3 position)
+    {
+        return GridToIndex(CoordinateConversion.WorldToGrid(position));
+    }
+
+    private Vector2Int IndexToGrid(int index)
+    {
+        return new Vector2Int(index % boardSize, index / boardSize);
+    }
+
+    private int GridToIndex(Vector2Int grid)
+    {
+        return grid.x + grid.y;
+    }
+
+    private int GridToIndex(Vector3 position)
+    {
+        return GridToIndex(CoordinateConversion.WorldToGrid(position));
     }
 }

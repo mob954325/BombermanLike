@@ -45,13 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81120c95d35c3a34f8278ace2419de9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floor:
-    RawGuidValue: 09926244d42653d4ead01aadc7ca599e
-  wall:
-    RawGuidValue: b7e3055820911e44a85fd0cfdb4849f8
-  block:
-  - RawGuidValue: 40ae7e041d86baa47bbf8e16e5c94764
-  - RawGuidValue: bb7f4a286f852314083950ab44dc5101
 --- !u!114 &4718727705666355099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,5 +61,4 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 2433056661849087475}
+  NetworkedBehaviours: []

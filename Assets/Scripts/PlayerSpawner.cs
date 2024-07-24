@@ -21,11 +21,6 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField]
     private NetworkPrefabRef boardPrefab;
-
-    /// <summary>
-    /// 스폰 위치
-    /// </summary>
-    private Vector3 spawnPosition = Vector3.zero;
     
     /// <summary>
     /// 플레이어 스폰 함수
@@ -34,6 +29,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void SpawnAllPlayer(NetworkRunner runner, out List<NetworkObject> playersList)
     {
         playersList = new List<NetworkObject>();
+        int index = 0;
 
         if(!runner.IsClient) // Host만 처리
         {
@@ -41,6 +37,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
             {
                 string playerName = GameManager.instance.GetPlayerData(player, runner).nickName.ToString();
                 playersList.Add(SpawnPlayer(runner, player, playerName));
+                index++;
             }
         }
     }
@@ -56,7 +53,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
         NetworkObject playerObject = runner.Spawn
             (
                 playerPrefab,
-                spawnPosition,
+                Vector3.zero,
                 Quaternion.identity,
                 player,
                 SpawnInit

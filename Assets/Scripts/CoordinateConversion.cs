@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Util : MonoBehaviour
+public class CoordinateConversion : MonoBehaviour
 {
     /// <summary>
     /// 그리드에서 월즈 좌표값 구하는 함수 (x,y)
