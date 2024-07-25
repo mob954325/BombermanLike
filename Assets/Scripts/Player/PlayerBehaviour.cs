@@ -8,6 +8,8 @@ using Fusion;
 /// </summary>
 public class PlayerBehaviour : NetworkBehaviour
 {
+    public EffectManager effectManager;
+
     /// <summary>
     /// 폭탄 프리팹
     /// </summary>
@@ -70,6 +72,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public override void Spawned()
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        effectManager.ClearParticles();
     }
 
     public override void Render()
@@ -101,7 +104,7 @@ public class PlayerBehaviour : NetworkBehaviour
             Object.InputAuthority,
             (runner, o) =>
             {
-                o.GetComponent<BombBehaviour>().Init(CurrnetGrid);
+                o.GetComponent<BombBehaviour>().Init(CurrnetGrid, this);
             });
     }
 
@@ -127,5 +130,11 @@ public class PlayerBehaviour : NetworkBehaviour
         objColor = new Color(Random.value, Random.value, Random.value);
         isSpawed = true;
         Debug.Log("색 선정 완료");
+    }
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    public void RPC_ExplosionEffect(Vector3 position)
+    {
+        effectManager.PlayParticle(0, position);
     }
 }

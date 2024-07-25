@@ -9,7 +9,8 @@ public class BombBehaviour : NetworkBehaviour
     // 타이머가 끝나면 십자가 모양으로 터짐
     // 이펙트 생성
     // 오브젝트 디스폰
-    NetworkObject netObject;
+
+    PlayerBehaviour player;
 
     /// <summary>
     /// 스폰 위치 그리드값
@@ -33,21 +34,17 @@ public class BombBehaviour : NetworkBehaviour
     [Networked]
     private int explosionLength { get; set; }
 
-    private void Awake()
-    {
-        netObject = GetComponent<NetworkObject>();
-    }
-
     /// <summary>
     /// 폭탄 초기화 함수
     /// </summary>
     /// <param name="spawnPosition">스폰한 그리드 위치 값</param>
-    public void Init(Vector2Int spawnPosition)
+    public void Init(Vector2Int spawnPosition, PlayerBehaviour player)
     {
         gameObject.name = $"Bomb_{Id}";
         explosionLength = 1;
 
         spawnGrid = spawnPosition;
+        this.player = player;
     }
 
     // 네트워크 함수 ===============================================================================
@@ -64,11 +61,21 @@ public class BombBehaviour : NetworkBehaviour
     {
         if (bombTimer.Expired(Runner))
         {
+            OnExplosion();
             Runner.Despawn(Object);        
         }        
     }
 
     // 기능 함수 ===============================================================================
+
+    private void OnExplosion()
+    {
+        if(Runner.IsServer)
+        {
+            player.RPC_ExplosionEffect(this.transform.position);
+            List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
+        }
+    }
 
     /// <summary>
     /// 폭발 위치 반환 함수

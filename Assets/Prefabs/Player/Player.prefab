@@ -50,8 +50,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d26a1832fef1147868974ad419a3c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effectManager: {fileID: 11400000, guid: 718e5b8884a48bf4c84ec8c7f289ccbd, type: 2}
   bombPrefab: {fileID: 3292835039941038289, guid: ae941e52cf508214d853a8c149577b8a, type: 3}
-  objColor: {r: 0, g: 0, b: 0, a: 0}
+  bodyMaterial: {fileID: 0}
+  _objColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &8309361528557068209
 MonoBehaviour:
   m_ObjectHideFlags: 0
