@@ -20,10 +20,10 @@ public interface IHealth
     /// <summary>
     /// 피격시 실행되는 함수
     /// </summary>
-    public void OnHit();
+    public void RPC_OnHit();
 
     /// <summary>
     /// 사망시 실행되는 함수
     /// </summary>
-    public void OnDie();
+    public void RPC_OnDie();
 }

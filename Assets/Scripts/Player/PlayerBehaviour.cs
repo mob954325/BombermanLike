@@ -6,7 +6,7 @@ using Fusion;
 /// <summary>
 /// 플레이어 행동 클래스
 /// </summary>
-public class PlayerBehaviour : NetworkBehaviour
+public class PlayerBehaviour : NetworkBehaviour, IHealth
 {
     public EffectManager effectManager;
 
@@ -25,22 +25,8 @@ public class PlayerBehaviour : NetworkBehaviour
     /// <summary>
     /// 플레이어 현재 그리드 위치값
     /// </summary>
-    private Vector2Int currentGrid;
-
-    /// <summary>
-    /// 플레이어 현재 그리드 위치값 접근 및 수정용 프로퍼티
-    /// </summary>
-    public Vector2Int CurrnetGrid
-    {
-        get => currentGrid;
-        set
-        {
-            if(currentGrid != value)
-            {
-                currentGrid = value;
-            }
-        }
-    }
+    [Networked]
+    private Vector2Int CurrentGrid { get; set; }
 
     /// <summary>
     /// 오브젝트 색깔
@@ -59,12 +45,43 @@ public class PlayerBehaviour : NetworkBehaviour
     [Networked]
     private bool isSpawed { get; set; } = false;
 
+    public int Hp 
+    { 
+        get => hp;
+        set
+        {
+            hp = value;
+
+            if(hp < 0) // 사망 처리
+            {
+                hp = 0;
+                RPC_OnDie();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 현재 체력
+    /// </summary>
+    private int hp;
+
+    public int MaxHp { get => maxHp; set => maxHp = value; }
+
+    /// <summary>
+    /// 최대 체력
+    /// </summary>
+    private int maxHp;
+
     // 유니티 함수 ===============================================================================
 
     private void Awake()
     {
         Transform child = transform.GetChild(0);
         bodyMaterial = child.GetComponent<MeshRenderer>().material;
+    }
+
+    private void FixedUpdate()
+    {
     }
 
     // Fusion 함수 ===============================================================================
@@ -104,7 +121,7 @@ public class PlayerBehaviour : NetworkBehaviour
             Object.InputAuthority,
             (runner, o) =>
             {
-                o.GetComponent<BombBehaviour>().Init(CurrnetGrid, this);
+                o.GetComponent<BombBehaviour>().Init(CurrentGrid, this);
             });
     }
 
@@ -125,6 +142,9 @@ public class PlayerBehaviour : NetworkBehaviour
         isSpawed = true;
     }
 
+    /// <summary>
+    /// 스폰전 초기화 함수
+    /// </summary>
     public void InitBeforeSpawn()
     {
         objColor = new Color(Random.value, Random.value, Random.value);
@@ -132,9 +152,69 @@ public class PlayerBehaviour : NetworkBehaviour
         Debug.Log("색 선정 완료");
     }
 
+    /// <summary>
+    /// 폭탄 폭발 이팩트 함수 (이팩트 매니저를 위해서 플레이어에 작성)
+    /// </summary>
+    /// <param name="position">폭발하는 위치</param>
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
     public void RPC_ExplosionEffect(Vector3 position)
     {
         effectManager.PlayParticle(0, position);
+    }
+
+    /// <summary>
+    /// 그리드 위치를 설정하는 함수
+    /// </summary>
+    public void SetGridPosition(Vector3 worldPosition)
+    {
+        CurrentGrid = CoordinateConversion.WorldToGrid(worldPosition);
+    }
+
+    public Vector2Int GetGridPosition()
+    {
+        return CurrentGrid;
+    }
+
+    /// <summary>
+    /// 공격 면역 함수
+    /// </summary>
+    private void OnHitImmune()
+    {
+
+    }
+
+    /// <summary>
+    /// 피격 받을 때 색상 변경 코루틴
+    /// </summary>
+    /// <param name="prev">이전 색상(플레이어의 원래 색상)</param>
+    private IEnumerator hitEffect(Color prev)
+    {
+        float remainTime = 1f;
+        Color curColor = bodyMaterial.color;
+
+        while (remainTime > 0f)
+        {
+            remainTime -= Time.deltaTime;
+            bodyMaterial.color = Color.Lerp(prev, curColor, remainTime);
+
+            yield return null;
+        }
+    }
+
+    // IHealth =================================================================================
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    public void RPC_OnHit()
+    {
+        hp--;
+
+        Color prevColor = bodyMaterial.color;
+        bodyMaterial.color = Color.red;
+        hitEffect(prevColor);
+    }
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    public void RPC_OnDie()
+    {
     }
 }

@@ -10,12 +10,20 @@ public class BombBehaviour : NetworkBehaviour
     // 이펙트 생성
     // 오브젝트 디스폰
 
-    PlayerBehaviour player;
+    /// <summary>
+    /// 소환한 플레이어
+    /// </summary>
+    private PlayerBehaviour player;
+
+    /// <summary>
+    /// 레벨 매니저
+    /// </summary>
+    private LevelBehaviour levelBehaviour;
 
     /// <summary>
     /// 스폰 위치 그리드값
     /// </summary>
-    private Vector2Int spawnGrid = Vector2Int.zero;
+    [SerializeField] private Vector2Int spawnGrid = Vector2Int.zero;
 
     /// <summary>
     /// 터지는 시간 타이머
@@ -45,6 +53,8 @@ public class BombBehaviour : NetworkBehaviour
 
         spawnGrid = spawnPosition;
         this.player = player;
+
+        levelBehaviour = FindAnyObjectByType<LevelBehaviour>(); 
     }
 
     // 네트워크 함수 ===============================================================================
@@ -74,6 +84,7 @@ public class BombBehaviour : NetworkBehaviour
         {
             player.RPC_ExplosionEffect(this.transform.position);
             List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
+            levelBehaviour.CheckHitPlayers(positions);
         }
     }
 
@@ -83,7 +94,10 @@ public class BombBehaviour : NetworkBehaviour
     /// <returns>그리드값이 저장된 Vector2Int형 리스트</returns>
     private List<Vector2Int> GetExplosionPosition()
     {
-        List<Vector2Int> result = new List<Vector2Int>();
+        List<Vector2Int> result = new List<Vector2Int>
+        {
+            spawnGrid // 현재 폭탄 위치
+        };
 
         for(int i = 1; i < explosionLength + 1; i++)
         {

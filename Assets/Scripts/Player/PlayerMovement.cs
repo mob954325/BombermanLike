@@ -39,6 +39,8 @@ public class PlayerMovement : NetworkBehaviour
         if (!HasStateAuthority)
             return;
 
+        playerBehaviour.SetGridPosition(characterController.transform.position);
+
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
             characterController.Move(moveSpeed * Runner.DeltaTime * data.direction);
