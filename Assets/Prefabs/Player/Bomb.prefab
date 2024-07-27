@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 4517959426582510642}
   - component: {fileID: 3292835039941038289}
   - component: {fileID: 7859300045331846204}
+  - component: {fileID: -8597541626286385640}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -161,7 +162,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c7ddcb69e26f76468328ff5ccd5d820, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectManager: {fileID: 11400000, guid: 718e5b8884a48bf4c84ec8c7f289ccbd, type: 2}
   timeToExplosion: 2
 --- !u!114 &7859300045331846204
 MonoBehaviour:
@@ -181,3 +181,20 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 3292835039941038289}
+  - {fileID: -8597541626286385640}
+--- !u!114 &-8597541626286385640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5049672523115218070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
