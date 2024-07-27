@@ -61,7 +61,7 @@ public class Board : MonoBehaviour
             (runner, o) =>
             {
                 obj = o;
-                o.GetComponent<Cell>().Init(type, name, position + Vector3.up, this.transform);
+                o.GetComponent<Cell>().Init(type, name, position + Vector3.up, GetComponent<NetworkTRSP>().transform);
             });
         }
     }
