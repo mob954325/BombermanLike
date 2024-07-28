@@ -21,22 +21,36 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField]
     private NetworkPrefabRef boardPrefab;
-    
+
+    /// <summary>
+    /// 플레이어 스폰 위치
+    /// </summary>
+    public static Vector3[] spawnPosition;
+
     /// <summary>
     /// 플레이어 스폰 함수
     /// </summary>
     /// <param name="runner">로컬 러너</param>
     public void SpawnAllPlayer(NetworkRunner runner, out List<NetworkObject> playersList)
     {
+        spawnPosition = new Vector3[4];
+
         playersList = new List<NetworkObject>();
         int index = 0;
 
         if(!runner.IsClient) // Host만 처리
         {
+            for (int i = 0; i < spawnPosition.Length; i++)
+            {
+                spawnPosition[i] = transform.GetChild(i).transform.position;
+            }
+
             foreach(var player in runner.ActivePlayers)
             {
                 string playerName = GameManager.instance.GetPlayerData(player, runner).nickName.ToString();
-                playersList.Add(SpawnPlayer(runner, player, playerName));
+                NetworkObject obj = SpawnPlayer(runner, player, spawnPosition[index], playerName);
+                playersList.Add(obj);
+
                 index++;
             }
         }
@@ -48,12 +62,12 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     /// <param name="runner">로컬 네트워크 러너</param>
     /// <param name="player">플레이어</param>
     /// <param name="nick">닉네임</param>
-    private NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef player, string nick = "")
+    private NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef player, Vector3 position, string nick = "")
     {
         NetworkObject playerObject = runner.Spawn
             (
                 playerPrefab,
-                Vector3.zero,
+                position,
                 Quaternion.identity,
                 player,
                 SpawnInit
@@ -67,7 +81,6 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     /// </summary>
     private void SpawnInit(NetworkRunner runner, NetworkObject obj)
     {
-        PlayerBehaviour playerBehaviour = obj.GetComponent<PlayerBehaviour>();
         // 초기화 필요하면 작성
     }
 

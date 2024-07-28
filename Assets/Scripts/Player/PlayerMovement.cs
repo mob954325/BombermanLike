@@ -9,8 +9,10 @@ using Fusion.Addons.Physics;
 /// </summary>
 public class PlayerMovement : NetworkBehaviour
 {
-    NetworkCharacterController characterController;
+    NetworkRigidbody3D rigid;
     PlayerBehaviour playerBehaviour;
+
+    public float speed = 5f;
 
     /// <summary>
     /// 폭탄 설치 버튼 딜레이 타이머
@@ -30,7 +32,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Awake()
     {
-        characterController = GetComponent<NetworkCharacterController>();
+        rigid = GetComponent<NetworkRigidbody3D>();
         playerBehaviour = GetComponent<PlayerBehaviour>();
     }
 
@@ -39,11 +41,11 @@ public class PlayerMovement : NetworkBehaviour
         if (!HasStateAuthority)
             return;
 
-        playerBehaviour.SetGridPosition(characterController.transform.position);
+        playerBehaviour.SetGridPosition(rigid.transform.position);
 
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
-            characterController.Move(moveSpeed * Runner.DeltaTime * data.direction);
+            rigid.transform.Translate(Time.fixedDeltaTime * speed * data.direction);
         }
 
         if(data.buttons.IsSet(PlayerButtons.Attack) && setBombDelay.ExpiredOrNotRunning(Runner)) // 공격 버튼 눌렀는지 확인

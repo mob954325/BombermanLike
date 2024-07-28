@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 6517363061877518590}
   - component: {fileID: 8309361528557068209}
   - component: {fileID: 4363975329501503293}
-  - component: {fileID: 7065090931994621213}
+  - component: {fileID: 3637795208225342009}
   - component: {fileID: 6663137624079374362}
-  - component: {fileID: -5834771920139854960}
+  - component: {fileID: 1665209832273680116}
+  - component: {fileID: 2935807791126236003}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -54,6 +55,7 @@ MonoBehaviour:
   bombPrefab: {fileID: 3292835039941038289, guid: ae941e52cf508214d853a8c149577b8a, type: 3}
   bodyMaterial: {fileID: 0}
   _objColor: {r: 0, g: 0, b: 0, a: 0}
+  No: 0
 --- !u!114 &8309361528557068209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,6 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093065112a021a54986e10fba0a62ac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 3
   moveSpeed: 10
   setBombDelayTime: 0.5
 --- !u!114 &4363975329501503293
@@ -81,7 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputDir: {x: 0, y: 0, z: 0}
---- !u!114 &7065090931994621213
+--- !u!114 &3637795208225342009
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,15 +93,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1071137036366301513}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a591d221a634417e9827eb58e17de84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 10
-  braking: 10
-  maxSpeed: 2
-  rotationSpeed: 360
+  SyncScale: 1
+  SyncParent: 1
+  _interpolationTarget: {fileID: 1439156198003989517}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 1
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
 --- !u!114 &6663137624079374362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,9 +126,36 @@ MonoBehaviour:
   - {fileID: 6517363061877518590}
   - {fileID: 8309361528557068209}
   - {fileID: 4363975329501503293}
-  - {fileID: 7065090931994621213}
---- !u!143 &-5834771920139854960
-CharacterController:
+  - {fileID: 3637795208225342009}
+--- !u!54 &1665209832273680116
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071137036366301513}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &2935807791126236003
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -139,12 +173,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6527537516025582286
 GameObject:

@@ -45,6 +45,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     [Networked]
     private bool isSpawed { get; set; } = false;
 
+    /// <summary>
+    /// 몇번째 스폰인지 저장하는 변수
+    /// </summary>
+    public int No;
+
     public int Hp 
     { 
         get => hp;
@@ -80,16 +85,13 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         bodyMaterial = child.GetComponent<MeshRenderer>().material;
     }
 
-    private void FixedUpdate()
-    {
-    }
-
     // Fusion 함수 ===============================================================================
 
     public override void Spawned()
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         effectManager.ClearParticles();
+
     }
 
     public override void Render()
@@ -145,11 +147,12 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// <summary>
     /// 스폰전 초기화 함수
     /// </summary>
-    public void InitBeforeSpawn()
+    public void InitBeforeSpawn(int index)
     {
         objColor = new Color(Random.value, Random.value, Random.value);
+        No = index;
+
         isSpawed = true;
-        Debug.Log("색 선정 완료");
     }
 
     /// <summary>

@@ -34,7 +34,10 @@ public class Board : MonoBehaviour
         {
             for(int x = 0; x < boardSize; x++)
             {
-                if(y % 2 == 1 && x % 2 == 0)
+                if (IsSpawnPoint(x, y))
+                    continue;
+
+                if(y % 2 == 1 && x % 2 == 1)
                 {
                     // 가장자리를 제외한 짝수 번째 셀은 벽이다. ( y는 홀수번째 줄, x는 짝수 번째마다)
                     CreateCell(runner, CellType.Wall, CoordinateConversion.GridToWorld(x, y));
@@ -42,12 +45,15 @@ public class Board : MonoBehaviour
                 else
                 {
                     // 플레이어 주변 한 칸을 제외하고 파괴 가능한 벽이 랜덤으로 배치된다.
-                    CreateCell(runner, CellType.Breakable, CoordinateConversion.GridToWorld(x, y));
+                    float rand = Random.value;
+                    if(rand > 0.3)
+                    {
+                        CreateCell(runner, CellType.Breakable, CoordinateConversion.GridToWorld(x, y));
+                    }
                 }
             }
         }
 
-        //InitCells();
     }
 
     private void CreateCell(NetworkRunner runner, CellType type, Vector3 position)
@@ -64,6 +70,28 @@ public class Board : MonoBehaviour
                 o.GetComponent<Cell>().Init(type, name, position + Vector3.up, GetComponent<NetworkTRSP>().transform);
             });
         }
+    }
+
+    /// <summary>
+    /// 스폰 지점인지 확인하는 함수
+    /// </summary>
+    /// <param name="x">x 값</param>
+    /// <param name="y">y 값</param>
+    /// <returns>스폰 지점이면 true 아니면 false</returns>
+    private bool IsSpawnPoint(int x, int y)
+    {
+        bool result = false;
+
+        if((x == 0 && y == 0)
+            || (x == 0 && y == boardSize - 1)
+            || (x == boardSize - 1 && y == boardSize - 1)
+            || (x == boardSize - 1 && y == 0))
+        {
+            result = true;
+        }
+
+
+        return result;
     }
 
     /// <summary>
