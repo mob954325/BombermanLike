@@ -5,12 +5,10 @@ using Fusion;
 
 public class Board : MonoBehaviour
 {
-    // 보드한테 필요한건?
-
-    // 1. 각 셀 오브젝트 관리
-    // 1.1 셀 생성
-    // 1.2 셀 파괴
-    [SerializeField] private Dictionary<int, Cell> cells = new Dictionary<int, Cell>();
+    /// <summary>
+    /// 셀 딕셔너리
+    /// </summary>
+    private Dictionary<int, Cell> cells = new Dictionary<int, Cell>();
 
     /// <summary>
     /// 셀 프리팹
@@ -21,26 +19,29 @@ public class Board : MonoBehaviour
     /// <summary>
     /// 보드 크기
     /// </summary>
-    const int boardSize = 13;
+    const int BoardSize = 13;
+
+    /// <summary>
+    /// 셀 하나의 사이즈 (중앙값 계산 용)
+    /// </summary>
+    const float CellSize = 1f;
 
     /// <summary>
     /// 보드 초기화 함수
     /// </summary>
     public void Init(NetworkRunner runner)
     {
-        // 0, 0 | boardsize, 0 | 0, boardsize | boardsize, boardsize
-
-        for(int y = 0; y < boardSize; y++)
+        for(int y = 0; y < BoardSize; y++)
         {
-            for(int x = 0; x < boardSize; x++)
+            for(int x = 0; x < BoardSize; x++)
             {
-                if (IsSpawnPoint(x, y))
+                if (IsNearSpawn(x, y))
                     continue;
 
                 if(y % 2 == 1 && x % 2 == 1)
                 {
                     // 가장자리를 제외한 짝수 번째 셀은 벽이다. ( y는 홀수번째 줄, x는 짝수 번째마다)
-                    CreateCell(runner, CellType.Wall, CoordinateConversion.GridToWorld(x, y));
+                    CreateCell(runner, CellType.Wall, CoordinateConversion.GetGridCenter(x, y, CellSize));
                 }
                 else
                 {
@@ -48,7 +49,7 @@ public class Board : MonoBehaviour
                     float rand = Random.value;
                     if(rand > 0.3)
                     {
-                        CreateCell(runner, CellType.Breakable, CoordinateConversion.GridToWorld(x, y));
+                        CreateCell(runner, CellType.Breakable, CoordinateConversion.GetGridCenter(x, y, CellSize));
                     }
                 }
             }
@@ -73,19 +74,19 @@ public class Board : MonoBehaviour
     }
 
     /// <summary>
-    /// 스폰 지점인지 확인하는 함수
+    /// 스폰 지점에 가까운지 확인하는 함수 (근처 1칸씩, 대각선 제외)
     /// </summary>
     /// <param name="x">x 값</param>
     /// <param name="y">y 값</param>
     /// <returns>스폰 지점이면 true 아니면 false</returns>
-    private bool IsSpawnPoint(int x, int y)
+    private bool IsNearSpawn(int x, int y)
     {
         bool result = false;
 
-        if((x == 0 && y == 0)
-            || (x == 0 && y == boardSize - 1)
-            || (x == boardSize - 1 && y == boardSize - 1)
-            || (x == boardSize - 1 && y == 0))
+        if((x < 2 && y < 2)
+            || (x < 2 && y > BoardSize - 3)
+            || (x > BoardSize - 3 && y > BoardSize - 3)
+            || (x > BoardSize - 3 && y < 2))
         {
             result = true;
         }
@@ -101,7 +102,7 @@ public class Board : MonoBehaviour
     /// <returns>존재하면 true 아니면 false</returns>
     private bool IsVaildGrid(Vector2Int grid)
     {
-        return grid.x > -1 && grid.x < boardSize && grid.y > -1 && grid.y < boardSize;
+        return grid.x > -1 && grid.x < BoardSize && grid.y > -1 && grid.y < BoardSize;
     }
 
     // 좌표 함수 ======================================================================================
@@ -113,7 +114,7 @@ public class Board : MonoBehaviour
 
     private Vector2Int IndexToGrid(int index)
     {
-        return new Vector2Int(index % boardSize, index / boardSize);
+        return new Vector2Int(index % BoardSize, index / BoardSize);
     }
 
     private int GridToIndex(Vector2Int grid)

@@ -17,12 +17,12 @@ public class Cell : NetworkBehaviour
 {
     CellType type;
 
-    NetworkTransform networkTransform;
+    NetworkTRSP trsp;
     NetworkObject networkObject;
 
     private void Awake()
     {
-        networkTransform = GetComponent<NetworkTransform>();
+        trsp = GetComponent<NetworkTRSP>();
         networkObject = GetComponent<NetworkObject>();
     }
 
@@ -34,8 +34,8 @@ public class Cell : NetworkBehaviour
         this.type = type;
         this.gameObject.name = name;
 
-        networkTransform.transform.parent = parent;
-        networkTransform.transform.localPosition = position;
+        trsp.transform.parent = parent;
+        trsp.transform.localPosition = position;
     }
 
     public void GetHit()

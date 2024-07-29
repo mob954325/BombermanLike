@@ -39,10 +39,22 @@ public class CoordinateConversion : MonoBehaviour
     /// 한 칸의 중앙값을 반환하는 함수
     /// </summary>
     /// <param name="world">월드 좌표 값</param>
-    /// <param name="gridLength">한 칸의 길이</param>
+    /// <param name="cellLength">한 칸의 길이</param>
     /// <returns>한 칸의 중앙 값</returns>
-    public static Vector3 GetGridCenter(Vector3 world, float gridLength)
+    public static Vector3 GetGridCenter(Vector3 world, float cellLength)
     {
-        return new Vector3(world.x + gridLength * 0.5f, 0f, world.z + gridLength * 0.5f);
+        return new Vector3(world.x + cellLength * 0.5f, 0f, world.z + cellLength * 0.5f);
+    }
+
+    /// <summary>
+    /// 한 칸의 중앙값을 반환하는 함수
+    /// </summary>
+    /// <param name="x">x 좌표</param>
+    /// <param name="y">y 좌표</param>
+    /// <param name="cellLength">한 칸의 길이</param>
+    /// <returns>한 칸의 중앙 값</returns>
+    public static Vector3 GetGridCenter(int x, int y, float cellLength)
+    {
+        return new Vector3(x + cellLength * 0.5f, 0f, y + cellLength * 0.5f);
     }
 }
