@@ -115,10 +115,10 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// <summary>
     /// 폭탄 설치하는 함수
     /// </summary>
-    public void SetBomb()
+    public void SetBomb(Vector3 worldGridPosition)
     {
         Runner.Spawn(bombPrefab,
-            transform.position,
+            worldGridPosition,
             Quaternion.identity,
             Object.InputAuthority,
             (runner, o) =>

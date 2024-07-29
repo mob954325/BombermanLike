@@ -9,6 +9,7 @@ using Fusion;
 public class LevelBehaviour : NetworkBehaviour
 {
     public List<NetworkObject> playerObjs = new List<NetworkObject>();
+    public List<Cell> cells = new List<Cell>();
 
     // Fusion 함수 ===============================================================================
 
@@ -38,7 +39,11 @@ public class LevelBehaviour : NetworkBehaviour
             index++;
         }
     }
-
+    
+    /// <summary>
+    /// 플레이어가 폭발에 맞는지 확인하는 함수
+    /// </summary>
+    /// <param name="grids">폭발 위치 그리드값 리스트</param>
     public void CheckHitPlayers(List<Vector2Int> grids)
     {
         foreach(var obj in playerObjs)
@@ -55,10 +60,36 @@ public class LevelBehaviour : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// 셀이 폭발에 맞는지 확인하는 함수
+    /// </summary>
+    /// <param name="grids">폭발 위치 그리드값 리스트</param>
+    public void CheckHitCells(List<Vector2Int> grids)
+    {
+        foreach (var obj in cells)
+        {
+            Cell cell = obj.GetComponent<Cell>();
+
+            foreach (var grid in grids)
+            {
+                Debug.Log($"{grid}, {cell.GetGridPosition()}");
+                if (grid == cell.GetGridPosition())
+                {
+                    cell.RPC_OnHit();
+                }
+            }
+        }
+    }
+
     private void CreateBoard()
     {
         Board board = FindObjectOfType<Board>();
-        board.Init(FusionHelper.LocalRunner);
+        board.Init(FusionHelper.LocalRunner, out List<Cell> list);
+
+        foreach(var cell in list)
+        {
+            cells.Add(cell);
+        }
     }
 
     // 연결해제

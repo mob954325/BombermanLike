@@ -43,18 +43,20 @@ public class PlayerMovement : NetworkBehaviour
 
         playerBehaviour.SetGridPosition(rigid.transform.position);
 
+        // 움직임 
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
             rigid.transform.Translate(Time.fixedDeltaTime * speed * data.direction);
         }
 
+        // 폭탄 설치
         if (data.buttons.IsSet(PlayerButtons.Attack) && setBombDelay.ExpiredOrNotRunning(Runner)) // 공격 버튼 눌렀는지 확인
         {
             setBombDelay = TickTimer.CreateFromSeconds(Runner, setBombDelayTime);
-            playerBehaviour.SetBomb();
-            Debug.Log("PlayerMovemnet : 폭탄 설치");
+            playerBehaviour.SetBomb(CoordinateConversion.GetGridCenter(playerBehaviour.GetGridPosition(), Board.CellSize));
         }
 
+        // 퍼즈 매뉴
         if (data.buttons.IsSet(PlayerButtons.Pause))
         {
             GameManager.instance.ShowExitScreen();

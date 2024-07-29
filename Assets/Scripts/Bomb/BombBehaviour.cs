@@ -85,6 +85,7 @@ public class BombBehaviour : NetworkBehaviour
             player.RPC_ExplosionEffect(this.transform.position);
             List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
             levelBehaviour.CheckHitPlayers(positions);
+            levelBehaviour.CheckHitCells(positions);
         }
     }
 

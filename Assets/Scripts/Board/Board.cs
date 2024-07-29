@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Unity.VisualScripting;
+using Fusion.Addons.Physics;
 
 public class Board : MonoBehaviour
 {
@@ -24,13 +26,15 @@ public class Board : MonoBehaviour
     /// <summary>
     /// 셀 하나의 사이즈 (중앙값 계산 용)
     /// </summary>
-    const float CellSize = 1f;
+    public static float CellSize = 1f;
 
     /// <summary>
     /// 보드 초기화 함수
     /// </summary>
-    public void Init(NetworkRunner runner)
+    public void Init(NetworkRunner runner, out List<Cell> cells)
     {
+        List<Cell> cellList = new List<Cell>();
+
         for(int y = 0; y < BoardSize; y++)
         {
             for(int x = 0; x < BoardSize; x++)
@@ -38,32 +42,38 @@ public class Board : MonoBehaviour
                 if (IsNearSpawn(x, y))
                     continue;
 
-                if(y % 2 == 1 && x % 2 == 1)
-                {
-                    // 가장자리를 제외한 짝수 번째 셀은 벽이다. ( y는 홀수번째 줄, x는 짝수 번째마다)
-                    CreateCell(runner, CellType.Wall, CoordinateConversion.GetGridCenter(x, y, CellSize));
+                if(y % 2 == 1 && x % 2 == 1)    // 가장자리를 제외한 짝수 번째 셀은 벽이다. ( y는 홀수번째 줄, x는 짝수 번째마다)
+                {                    
+                    CreateCell(runner, CellType.Wall, CoordinateConversion.GetGridCenter(x, y, CellSize), out Cell cell);
+                    cellList.Add(cell);
                 }
-                else
-                {
-                    // 플레이어 주변 한 칸을 제외하고 파괴 가능한 벽이 랜덤으로 배치된다.
+                else // 플레이어 주변 한 칸을 제외하고 파괴 가능한 벽이 랜덤으로 배치된다.
+                {                    
                     float rand = Random.value;
                     if(rand > 0.3)
                     {
-                        CreateCell(runner, CellType.Breakable, CoordinateConversion.GetGridCenter(x, y, CellSize));
+                        CreateCell(runner, CellType.Breakable, CoordinateConversion.GetGridCenter(x, y, CellSize), out Cell cell);
+                        cellList.Add(cell);
                     }
                 }
             }
         }
 
+        cells = cellList;
     }
 
-    private void CreateCell(NetworkRunner runner, CellType type, Vector3 position)
+    private void CreateCell(NetworkRunner runner, CellType type, Vector3 position, out Cell createdCell)
     {
         NetworkObject obj = null;
         string name = $"{type}_{position.x}_{position.z}";
 
         if (runner.IsServer)
         {
+            if (!runner.TryGetComponent(out RunnerSimulatePhysics3D comp))
+            {
+                runner.AddComponent<RunnerSimulatePhysics3D>();
+            }
+
             obj = runner.Spawn(cellPrefab[(int)type], position, Quaternion.identity, null,
             (runner, o) =>
             {
@@ -71,6 +81,8 @@ public class Board : MonoBehaviour
                 o.GetComponent<Cell>().Init(type, name, position + Vector3.up, GetComponent<NetworkTRSP>().transform);
             });
         }
+
+        createdCell = obj.GetComponent<Cell>();
     }
 
     /// <summary>

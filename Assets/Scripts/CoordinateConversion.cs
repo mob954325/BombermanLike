@@ -49,6 +49,17 @@ public class CoordinateConversion : MonoBehaviour
     /// <summary>
     /// 한 칸의 중앙값을 반환하는 함수
     /// </summary>
+    /// <param name="grid">그리드 값</param>
+    /// <param name="cellLength">한 칸의 길이</param>
+    /// <returns>한 칸의 중앙 값</returns>
+    public static Vector3 GetGridCenter(Vector2Int grid, float cellLength)
+    {
+        return new Vector3(grid.x + cellLength * 0.5f, 0f, grid.y + cellLength * 0.5f);
+    }
+
+    /// <summary>
+    /// 한 칸의 중앙값을 반환하는 함수
+    /// </summary>
     /// <param name="x">x 좌표</param>
     /// <param name="y">y 좌표</param>
     /// <param name="cellLength">한 칸의 길이</param>
