@@ -187,4 +187,29 @@ public class GameManager : MonoBehaviour
         _ = ShutDownRunner();
         Application.Quit();
     }
+
+    /// <summary>
+    /// 종료 화면 켜져있는지 확인하는 함수
+    /// </summary>
+    /// <returns>켜저있으면 true 아니면 false</returns>
+    public bool IsExitScreenOpen()
+    {
+        return exitScreen.activeSelf;
+    }
+
+    /// <summary>
+    /// 종료 캠버스 활성화 함수
+    /// </summary>
+    public void ShowExitScreen()
+    {
+        exitScreen.SetActive(true);
+    }
+
+    /// <summary>
+    /// 종료 캠버스 비활성화 함수
+    /// </summary>
+    public void CloseExitScreen()
+    { 
+        exitScreen.SetActive(false);
+    }
 }

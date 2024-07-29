@@ -20,6 +20,11 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
     /// </summary>
     private bool isPressedSpace = false;
 
+    /// <summary>
+    /// esc버튼을 눌렀는지 확인하는 변수
+    /// </summary>
+    private bool isPressedEscape = false;
+
     private void Awake()
     {
         playerInputAction = new PlayerInputAction();
@@ -33,20 +38,28 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
     private void OnPlayerDisable()
     {
         playerInputAction.Player.Enable();
+        playerInputAction.UI.Enable();
         playerInputAction.Player.Move.performed += OnMoveInput;
         playerInputAction.Player.Move.canceled += OnMoveInput;
         playerInputAction.Player.Attack.performed += OnAttackInput;
         playerInputAction.Player.Attack.canceled += OnAttackInput;
+        playerInputAction.UI.Exit.performed += OnEscapeInput;
+        playerInputAction.UI.Exit.canceled += OnEscapeInput;
     }
 
     private void OnPlayerEnable()
     {
+        playerInputAction.UI.Exit.canceled -= OnEscapeInput;
+        playerInputAction.UI.Exit.performed -= OnEscapeInput;
         playerInputAction.Player.Attack.canceled -= OnAttackInput;
         playerInputAction.Player.Attack.performed -= OnAttackInput;
         playerInputAction.Player.Move.canceled -= OnMoveInput;
         playerInputAction.Player.Move.performed -= OnMoveInput;
+        playerInputAction.UI.Disable();
         playerInputAction.Player.Disable();
     }
+
+    // 인풋 =========================================================================================
 
     private void OnMoveInput(InputAction.CallbackContext context)
     {
@@ -64,6 +77,26 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         isPressedSpace = context.performed;
     }
 
+    private void OnEscapeInput(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            isPressedEscape = !isPressedEscape;
+        }
+
+        // 화면 활성화 되었을 때 플레이어 움직임 막기
+        if(GameManager.instance.IsExitScreenOpen())
+        {
+            playerInputAction.Player.Disable();
+        }
+        else
+        {
+            playerInputAction.Player.Enable();
+        }
+    }
+
+    // Fusion =========================================================================================
+
     public override void Spawned() // 스폰 되었을 때 실행
     {
         if(Object.HasInputAuthority)
@@ -79,6 +112,8 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
 
         inputData.direction = playerInputDir;
         inputData.buttons.Set(PlayerButtons.Attack, isPressedSpace);
+        inputData.buttons.Set(PlayerButtons.Pause, isPressedEscape);
+
         input.Set(inputData);
     }
 

@@ -7,6 +7,7 @@ using Fusion;
 public enum PlayerButtons
 {
     Attack = 0,
+    Pause = 1
 }
 
 /// <summary>

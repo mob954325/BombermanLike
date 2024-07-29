@@ -48,11 +48,20 @@ public class PlayerMovement : NetworkBehaviour
             rigid.transform.Translate(Time.fixedDeltaTime * speed * data.direction);
         }
 
-        if(data.buttons.IsSet(PlayerButtons.Attack) && setBombDelay.ExpiredOrNotRunning(Runner)) // 공격 버튼 눌렀는지 확인
+        if (data.buttons.IsSet(PlayerButtons.Attack) && setBombDelay.ExpiredOrNotRunning(Runner)) // 공격 버튼 눌렀는지 확인
         {
             setBombDelay = TickTimer.CreateFromSeconds(Runner, setBombDelayTime);
             playerBehaviour.SetBomb();
             Debug.Log("PlayerMovemnet : 폭탄 설치");
+        }
+
+        if (data.buttons.IsSet(PlayerButtons.Pause))
+        {
+            GameManager.instance.ShowExitScreen();
+        }
+        else 
+        {
+            GameManager.instance.CloseExitScreen();
         }
     }
 }
