@@ -72,7 +72,6 @@ public class LevelBehaviour : NetworkBehaviour
 
             foreach (var grid in grids)
             {
-                Debug.Log($"{grid}, {cell.GetGridPosition()}");
                 if (grid == cell.GetGridPosition())
                 {
                     cell.RPC_OnHit();

@@ -49,7 +49,7 @@ public class BombBehaviour : NetworkBehaviour
     public void Init(Vector2Int spawnPosition, PlayerBehaviour player)
     {
         gameObject.name = $"Bomb_{Id}";
-        explosionLength = 1;
+        explosionLength = 2;
 
         spawnGrid = spawnPosition;
         this.player = player;

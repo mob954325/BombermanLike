@@ -75,7 +75,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// <summary>
     /// 최대 체력
     /// </summary>
-    private int maxHp;
+    private int maxHp = 3;
 
     // 유니티 함수 ===============================================================================
 
@@ -91,7 +91,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         effectManager.ClearParticles();
-
     }
 
     public override void Render()
@@ -150,6 +149,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     public void InitBeforeSpawn(int index)
     {
         objColor = new Color(Random.value, Random.value, Random.value);
+        hp = maxHp;
         No = index;
 
         isSpawed = true;
@@ -209,7 +209,8 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
     public void RPC_OnHit()
     {
-        hp--;
+        Hp--;
+        Debug.Log($"{Hp}");
 
         Color prevColor = bodyMaterial.color;
         bodyMaterial.color = Color.red;
@@ -219,5 +220,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
     public void RPC_OnDie()
     {
+        Debug.Log($"{this.gameObject.name}, {GetComponent<NetworkObject>().Id} : 사망");
     }
 }

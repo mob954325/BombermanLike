@@ -44,8 +44,7 @@ public class Board : MonoBehaviour
 
                 if(y % 2 == 1 && x % 2 == 1)    // 가장자리를 제외한 짝수 번째 셀은 벽이다. ( y는 홀수번째 줄, x는 짝수 번째마다)
                 {                    
-                    CreateCell(runner, CellType.Wall, CoordinateConversion.GetGridCenter(x, y, CellSize), out Cell cell);
-                    cellList.Add(cell);
+                    CreateCell(runner, CellType.Wall, CoordinateConversion.GetGridCenter(x, y, CellSize), out _);
                 }
                 else // 플레이어 주변 한 칸을 제외하고 파괴 가능한 벽이 랜덤으로 배치된다.
                 {                    
@@ -64,7 +63,8 @@ public class Board : MonoBehaviour
 
     private void CreateCell(NetworkRunner runner, CellType type, Vector3 position, out Cell createdCell)
     {
-        NetworkObject obj = null;
+        //NetworkObject obj = null;
+        Cell cell = null;
         string name = $"{type}_{position.x}_{position.z}";
 
         if (runner.IsServer)
@@ -74,15 +74,15 @@ public class Board : MonoBehaviour
                 runner.AddComponent<RunnerSimulatePhysics3D>();
             }
 
-            obj = runner.Spawn(cellPrefab[(int)type], position, Quaternion.identity, null,
+            runner.Spawn(cellPrefab[(int)type], position, Quaternion.identity, null,
             (runner, o) =>
             {
-                obj = o;
-                o.GetComponent<Cell>().Init(type, name, position + Vector3.up, GetComponent<NetworkTRSP>().transform);
+                cell = o.GetComponent<Cell>();
+                cell.Init(type, name, position + Vector3.up, GetComponent<NetworkTRSP>().transform);
             });
         }
 
-        createdCell = obj.GetComponent<Cell>();
+        createdCell = cell;
     }
 
     /// <summary>
