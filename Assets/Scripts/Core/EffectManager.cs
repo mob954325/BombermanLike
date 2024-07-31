@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EffectType
+{
+    Explosion = 0,
+    die
+}
+
 [CreateAssetMenu]
 public class EffectManager : ScriptableObject
 {

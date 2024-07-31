@@ -10,6 +10,8 @@ public class BombBehaviour : NetworkBehaviour
     // 이펙트 생성
     // 오브젝트 디스폰
 
+    public EffectManager effectManager;
+
     /// <summary>
     /// 소환한 플레이어
     /// </summary>
@@ -65,6 +67,7 @@ public class BombBehaviour : NetworkBehaviour
             return;
 
         bombTimer = TickTimer.CreateFromSeconds(Runner, timeToExplosion);
+        effectManager.ClearParticles();
     }
 
     public override void FixedUpdateNetwork()
@@ -76,16 +79,35 @@ public class BombBehaviour : NetworkBehaviour
         }        
     }
 
+    /// <summary>
+    /// 폭탄 폭발 이팩트 함수 (이팩트 매니저를 위해서 플레이어에 작성)
+    /// </summary>
+    /// <param name="position">폭발하는 위치</param>
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    public void RPC_ExplosionEffect(Vector3 position)
+    {
+        effectManager.PlayParticle((int)EffectType.Explosion, CoordinateConversion.GetGridCenter(position, Board.CellSize));
+    }
+
+    public void MultipleExplosionEffects(List<Vector2Int> list)
+    {
+        foreach (var item in list)
+        {
+            Vector3 world = CoordinateConversion.GridToWorld(item);
+            RPC_ExplosionEffect(world);
+        }
+    }
+
     // 기능 함수 ===============================================================================
 
     private void OnExplosion()
     {
         if(Runner.IsServer)
         {
-            player.RPC_ExplosionEffect(this.transform.position);
             List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
             levelBehaviour.CheckHitPlayers(positions);
             levelBehaviour.CheckHitCells(positions);
+            MultipleExplosionEffects(positions);
         }
     }
 
@@ -95,6 +117,13 @@ public class BombBehaviour : NetworkBehaviour
     /// <returns>그리드값이 저장된 Vector2Int형 리스트</returns>
     private List<Vector2Int> GetExplosionPosition()
     {
+        // 방향 배열
+        int[] dx = { 1, -1, 0, 0 };
+        int[] dy = { 0, 0, -1, 1 };
+
+        // 부서진 셀 개수 확인 (관통 파괴 방지용)
+        int[] checkBreakedCellCount = { 0, 0, 0, 0 }; // (위, 아래, 왼쪽, 오른쪽)
+
         List<Vector2Int> result = new List<Vector2Int>
         {
             spawnGrid // 현재 폭탄 위치
@@ -102,10 +131,23 @@ public class BombBehaviour : NetworkBehaviour
 
         for(int i = 1; i < explosionLength + 1; i++)
         {
-            result.Add(spawnGrid + Vector2Int.up * i);
-            result.Add(spawnGrid + Vector2Int.down * i);
-            result.Add(spawnGrid + Vector2Int.left * i);
-            result.Add(spawnGrid + Vector2Int.right * i);
+            for(int d = 0; d < 4; d++)
+            {
+                if (checkBreakedCellCount[d] > 0)   // 방향에서 부서진 셀이 있으면 무시
+                   continue;
+
+                Vector2Int nextGrid = new Vector2Int(spawnGrid.x + dx[d] * i, spawnGrid.y + dy[d] * i);
+
+                if (levelBehaviour.IsExistCell(nextGrid, out CellType type)) // 해당 그리드에 셀이 존재하면
+                {
+                    checkBreakedCellCount[d]++; // 파괴 개수 추가
+                }
+
+                if(IsVaildPosition(nextGrid)) // 해당 위치가 존재하면
+                {
+                    result.Add(nextGrid); // 리스트 추가
+                }
+            }
         }
 
         return result;
@@ -117,5 +159,14 @@ public class BombBehaviour : NetworkBehaviour
     public void IncreaseExplosionLength()
     {
         explosionLength++;
+    }
+
+    /// <summary>
+    /// 폭발하는 위치가 보드 안인지 확인하는 함수
+    /// </summary>
+    /// <returns>보드 안이면 true 밖이면 false</returns>
+    private bool IsVaildPosition(Vector2Int grid)
+    {
+        return grid.x > -1 && grid.x < Board.BoardSize && grid.y > -1 && grid.y < Board.BoardSize;
     }
 }

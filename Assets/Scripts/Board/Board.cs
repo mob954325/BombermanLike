@@ -5,6 +5,9 @@ using Fusion;
 using Unity.VisualScripting;
 using Fusion.Addons.Physics;
 
+/// <summary>
+/// 보드 생성용 클래스
+/// </summary>
 public class Board : MonoBehaviour
 {
     /// <summary>
@@ -19,12 +22,12 @@ public class Board : MonoBehaviour
     public NetworkPrefabRef[] cellPrefab;
 
     /// <summary>
-    /// 보드 크기
+    /// 보드 크기 (13)
     /// </summary>
-    const int BoardSize = 13;
+    public static int BoardSize = 13;
 
     /// <summary>
-    /// 셀 하나의 사이즈 (중앙값 계산 용)
+    /// 셀 하나의 사이즈 (중앙값 계산 용) (1f)
     /// </summary>
     public static float CellSize = 1f;
 
@@ -44,7 +47,8 @@ public class Board : MonoBehaviour
 
                 if(y % 2 == 1 && x % 2 == 1)    // 가장자리를 제외한 짝수 번째 셀은 벽이다. ( y는 홀수번째 줄, x는 짝수 번째마다)
                 {                    
-                    CreateCell(runner, CellType.Wall, CoordinateConversion.GetGridCenter(x, y, CellSize), out _);
+                    CreateCell(runner, CellType.Wall, CoordinateConversion.GetGridCenter(x, y, CellSize), out Cell cell);
+                    cellList.Add(cell);
                 }
                 else // 플레이어 주변 한 칸을 제외하고 파괴 가능한 벽이 랜덤으로 배치된다.
                 {                    
@@ -65,7 +69,7 @@ public class Board : MonoBehaviour
     {
         //NetworkObject obj = null;
         Cell cell = null;
-        string name = $"{type}_{position.x}_{position.z}";
+        string name = $"{type}_{position.z - 0.5f}_{position.x - 0.5f}";
 
         if (runner.IsServer)
         {

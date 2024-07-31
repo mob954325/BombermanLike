@@ -8,8 +8,6 @@ using Fusion;
 /// </summary>
 public class PlayerBehaviour : NetworkBehaviour, IHealth
 {
-    public EffectManager effectManager;
-
     /// <summary>
     /// 폭탄 프리팹
     /// </summary>
@@ -90,7 +88,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     public override void Spawned()
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        effectManager.ClearParticles();
     }
 
     public override void Render()
@@ -124,6 +121,9 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
             {
                 o.GetComponent<BombBehaviour>().Init(CurrentGrid, this);
             });
+
+        Debug.Log($"폭탄 설치 위치{worldGridPosition}");
+        Debug.Log($"유저 위치{CurrentGrid}");
     }
 
     /// <summary>
@@ -156,21 +156,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     }
 
     /// <summary>
-    /// 폭탄 폭발 이팩트 함수 (이팩트 매니저를 위해서 플레이어에 작성)
-    /// </summary>
-    /// <param name="position">폭발하는 위치</param>
-    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-    public void RPC_ExplosionEffect(Vector3 position)
-    {
-        effectManager.PlayParticle(0, position);
-    }
-
-    /// <summary>
     /// 그리드 위치를 설정하는 함수
     /// </summary>
     public void SetGridPosition(Vector3 worldPosition)
     {
-        CurrentGrid = CoordinateConversion.WorldToGrid(worldPosition);
+        CurrentGrid = CoordinateConversion.WorldToGrid(worldPosition + Vector3.one * 0.1f);
     }
 
     public Vector2Int GetGridPosition()

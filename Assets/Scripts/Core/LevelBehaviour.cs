@@ -72,7 +72,8 @@ public class LevelBehaviour : NetworkBehaviour
 
             foreach (var grid in grids)
             {
-                if (grid == cell.GetGridPosition())
+                if (grid == cell.GetGridPosition()
+                    && cell.GetCellType() == CellType.Breakable)
                 {
                     cell.RPC_OnHit();
                 }
@@ -80,14 +81,43 @@ public class LevelBehaviour : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// 그리드 위치에 셀이 존재하는 지 확인하는 함수
+    /// </summary>
+    /// <param name="grid">그리드</param>
+    /// <param name="type">셀 타입</param>
+    /// <returns>존재하면 true 아니면 false</returns>
+    public bool IsExistCell(Vector2Int grid, out CellType type)
+    {
+        bool result = false;
+        type = CellType.Floor;
+
+        foreach(var cell in cells)
+        {
+            Vector2Int cellGrid = cell.GetGridPosition();
+
+            if(grid == cellGrid && cell.GetComponent<NetworkBehaviour>().isActiveAndEnabled)
+            {
+                result = true;
+                break;
+            }
+
+            type = cell.GetCellType();
+        }
+
+        return result;
+    }
+
     private void CreateBoard()
     {
         Board board = FindObjectOfType<Board>();
         board.Init(FusionHelper.LocalRunner, out List<Cell> list);
 
+        int index = 0;
         foreach(var cell in list)
         {
             cells.Add(cell);
+            index++;
         }
     }
 

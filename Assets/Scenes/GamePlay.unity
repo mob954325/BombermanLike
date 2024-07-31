@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerObjs: []
+  cells: []
 --- !u!1 &244833092
 GameObject:
   m_ObjectHideFlags: 0

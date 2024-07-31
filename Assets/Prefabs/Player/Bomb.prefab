@@ -162,6 +162,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c7ddcb69e26f76468328ff5ccd5d820, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effectManager: {fileID: 11400000, guid: 718e5b8884a48bf4c84ec8c7f289ccbd, type: 2}
+  spawnGrid: {x: 0, y: 0}
   timeToExplosion: 2
 --- !u!114 &7859300045331846204
 MonoBehaviour:

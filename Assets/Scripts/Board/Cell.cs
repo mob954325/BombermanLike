@@ -20,7 +20,7 @@ public class Cell : NetworkBehaviour, IHealth
     private NetworkTRSP trsp;
     private NetworkObject networkObject;
 
-    private Vector2Int grid = Vector2Int.zero;
+    [SerializeField] Vector2Int grid = Vector2Int.zero;
 
     public int Hp { get; set; }
     public int MaxHp { get; set; }
@@ -49,7 +49,12 @@ public class Cell : NetworkBehaviour, IHealth
     {
         return grid;
     }
-    
+
+    public CellType GetCellType()
+    {
+        return type;
+    }
+
     [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
     public void RPC_OnHit()
     {
