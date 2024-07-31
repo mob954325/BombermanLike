@@ -48,10 +48,10 @@ public class BombBehaviour : NetworkBehaviour
     /// 폭탄 초기화 함수
     /// </summary>
     /// <param name="spawnPosition">스폰한 그리드 위치 값</param>
-    public void Init(Vector2Int spawnPosition, PlayerBehaviour player)
+    public void Init(Vector2Int spawnPosition, PlayerBehaviour player, int length)
     {
         gameObject.name = $"Bomb_{Id}";
-        explosionLength = 2;
+        explosionLength = length;
 
         spawnGrid = spawnPosition;
         this.player = player;
@@ -151,14 +151,6 @@ public class BombBehaviour : NetworkBehaviour
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// 폭발 길이 추가하는 함수
-    /// </summary>
-    public void IncreaseExplosionLength()
-    {
-        explosionLength++;
     }
 
     /// <summary>

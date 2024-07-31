@@ -8,6 +8,8 @@ using Fusion;
 /// </summary>
 public class LevelBehaviour : NetworkBehaviour
 {
+    public NetworkPrefabRef bombUpgradeItem;
+
     public List<NetworkObject> playerObjs = new List<NetworkObject>();
     public List<Cell> cells = new List<Cell>();
 
@@ -17,6 +19,8 @@ public class LevelBehaviour : NetworkBehaviour
     {
         CreateBoard();
         SpawnPlayer();
+
+        //FusionHelper.LocalRunner.Spawn(testitem, Vector3.zero + Vector3.up * 3f, Quaternion.identity);
     }
 
     // 기능 함수 ===============================================================================
@@ -76,6 +80,7 @@ public class LevelBehaviour : NetworkBehaviour
                     && cell.GetCellType() == CellType.Breakable)
                 {
                     cell.RPC_OnHit();
+                    RPC_SpawnItem(CoordinateConversion.GetGridCenter(grid, Board.CellSize));
                 }
             }
         }
@@ -119,6 +124,15 @@ public class LevelBehaviour : NetworkBehaviour
             cells.Add(cell);
             index++;
         }
+    }
+
+    /// <summary>
+    /// 랜덤으로 업그레이드 아이템 생성하는 함수
+    /// </summary>
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    private void RPC_SpawnItem(Vector3 world)
+    {
+        FusionHelper.LocalRunner.Spawn(bombUpgradeItem, world, Quaternion.identity);
     }
 
     // 연결해제

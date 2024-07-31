@@ -21,6 +21,16 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     private ChangeDetector changeDetector;
 
     /// <summary>
+    /// 플레이어 콜라이더
+    /// </summary>
+    private Collider collider;
+
+    /// <summary>
+    /// 부딪힌 콜라이더
+    /// </summary>
+    private Collider[] hitColliders;
+
+    /// <summary>
     /// 플레이어 현재 그리드 위치값
     /// </summary>
     [Networked]
@@ -31,6 +41,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// </summary>
     [Networked]
     public Color objColor { get; set; }
+
+    /// <summary>
+    /// 플레이어 폭탄의 폭발 길이
+    /// </summary>
+    private int explosionLength = 1;
 
     /// <summary>
     /// 입력 허가 체크 변수
@@ -81,6 +96,9 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     {
         Transform child = transform.GetChild(0);
         bodyMaterial = child.GetComponent<MeshRenderer>().material;
+        collider = transform.GetChild(1).GetComponent<Collider>();
+
+        hitColliders = new Collider[2];
     }
 
     // Fusion 함수 ===============================================================================
@@ -92,7 +110,9 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
 
     public override void Render()
     {
-        foreach(var change in changeDetector.DetectChanges(this))
+        DetectCollsion();
+
+        foreach (var change in changeDetector.DetectChanges(this))
         {
             switch(change)
             {
@@ -119,7 +139,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
             Object.InputAuthority,
             (runner, o) =>
             {
-                o.GetComponent<BombBehaviour>().Init(CurrentGrid, this);
+                o.GetComponent<BombBehaviour>().Init(CurrentGrid, this, explosionLength);
             });
 
         Debug.Log($"폭탄 설치 위치{worldGridPosition}");
@@ -192,6 +212,45 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
 
             yield return null;
         }
+    }
+
+    /// <summary>
+    /// 폭발 길이 추가하는 함수
+    /// </summary>
+    public void IncreaseExplosionLength()
+    {
+        explosionLength++;
+        Debug.Log($"{gameObject.name} : 폭발길이 {explosionLength}");
+    }
+
+    private void DetectCollsion()
+    {
+        int hitCount = FusionHelper.LocalRunner.GetPhysicsScene().OverlapBox(
+            transform.position,
+            collider.bounds.size * 0.9f,
+            hitColliders,
+            Quaternion.identity,
+            LayerMask.GetMask("Item"),
+            QueryTriggerInteraction.UseGlobal);
+
+        if(hitColliders != default) // 아이템 레이어를 가진 오브젝트에 충돌했을 때
+        {
+            foreach(var coll in hitColliders) // 충돌 확인
+            {
+                if(coll == null)
+                    continue;
+
+                if(coll.tag.Equals("Item") && coll.gameObject.activeSelf) // 아이템 태그 확인
+                {
+                    ItemObject item = coll.GetComponentInParent<ItemObject>();
+                    item.OnPick();
+                    IncreaseExplosionLength();
+                    break;
+                }
+            }
+        }
+
+        Debug.Log(hitCount);
     }
 
     // IHealth =================================================================================

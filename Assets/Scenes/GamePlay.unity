@@ -248,6 +248,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cd51877416b9e0408d728996ee62ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bombUpgradeItem:
+    RawGuidValue: 4dddb98070bc54d4fb3e1303ad1ad438
   playerObjs: []
   cells: []
 --- !u!1 &244833092
