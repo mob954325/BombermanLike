@@ -71,13 +71,14 @@ public class Board : MonoBehaviour
         Cell cell = null;
         string name = $"{type}_{position.z - 0.5f}_{position.x - 0.5f}";
 
+        // 물리 시뮬 컴포넌트 없으면 추가
+        if (!runner.TryGetComponent(out RunnerSimulatePhysics3D comp))
+        {
+            runner.AddComponent<RunnerSimulatePhysics3D>();
+        }
+
         if (runner.IsServer)
         {
-            if (!runner.TryGetComponent(out RunnerSimulatePhysics3D comp))
-            {
-                runner.AddComponent<RunnerSimulatePhysics3D>();
-            }
-
             runner.Spawn(cellPrefab[(int)type], position, Quaternion.identity, null,
             (runner, o) =>
             {
@@ -86,7 +87,7 @@ public class Board : MonoBehaviour
             });
         }
 
-        createdCell = cell;
+        createdCell = cell; // null 뜸 -> 클라이언트 파악 못함
     }
 
     /// <summary>

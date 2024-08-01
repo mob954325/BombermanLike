@@ -10,7 +10,7 @@ public class BombBehaviour : NetworkBehaviour
     // 이펙트 생성
     // 오브젝트 디스폰
 
-    public EffectManager effectManager;
+    //public EffectManager effectManager;
 
     /// <summary>
     /// 소환한 플레이어
@@ -44,6 +44,11 @@ public class BombBehaviour : NetworkBehaviour
     [Networked]
     private int explosionLength { get; set; }
 
+    private void Awake()
+    {
+        levelBehaviour = FindAnyObjectByType<LevelBehaviour>();
+    }
+
     /// <summary>
     /// 폭탄 초기화 함수
     /// </summary>
@@ -55,8 +60,6 @@ public class BombBehaviour : NetworkBehaviour
 
         spawnGrid = spawnPosition;
         this.player = player;
-
-        levelBehaviour = FindAnyObjectByType<LevelBehaviour>(); 
     }
 
     // 네트워크 함수 ===============================================================================
@@ -67,7 +70,6 @@ public class BombBehaviour : NetworkBehaviour
             return;
 
         bombTimer = TickTimer.CreateFromSeconds(Runner, timeToExplosion);
-        effectManager.ClearParticles();
     }
 
     public override void FixedUpdateNetwork()
@@ -79,22 +81,12 @@ public class BombBehaviour : NetworkBehaviour
         }        
     }
 
-    /// <summary>
-    /// 폭탄 폭발 이팩트 함수 (이팩트 매니저를 위해서 플레이어에 작성)
-    /// </summary>
-    /// <param name="position">폭발하는 위치</param>
-    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-    public void RPC_ExplosionEffect(Vector3 position)
-    {
-        effectManager.PlayParticle((int)EffectType.Explosion, CoordinateConversion.GetGridCenter(position, Board.CellSize));
-    }
-
     public void MultipleExplosionEffects(List<Vector2Int> list)
     {
         foreach (var item in list)
         {
             Vector3 world = CoordinateConversion.GridToWorld(item);
-            RPC_ExplosionEffect(world);
+            player.RPC_ExplosionEffect(world);
         }
     }
 
@@ -102,12 +94,12 @@ public class BombBehaviour : NetworkBehaviour
 
     private void OnExplosion()
     {
-        if(Runner.IsServer)
+        if(Runner.IsServer) // 1
         {
             List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
             levelBehaviour.CheckHitPlayers(positions);
             levelBehaviour.CheckHitCells(positions);
-            MultipleExplosionEffects(positions);
+            MultipleExplosionEffects(positions); // 클라이언트는 포지션 값을 받을 수 없음 -> ????
         }
     }
 

@@ -6,18 +6,21 @@ public class EffectObject : MonoBehaviour
 {
     private EffectManager manager;
     private ParticleSystem ps;
+    private ParticleSystem afterPs;
 
-    [SerializeField] private int id;
-    [SerializeField] private float time = float.MaxValue;
+    private int id;
+    private float time = float.MaxValue;
 
     private void Awake()
     {
         ps = GetComponent<ParticleSystem>();
+        afterPs = GetComponentInChildren<ParticleSystem>();
     }
 
     private void OnDisable()
     {
         ps.Stop();
+        if(afterPs != null) afterPs.Stop();
     }
 
     private void Update()
@@ -46,5 +49,6 @@ public class EffectObject : MonoBehaviour
         // 활성화
         gameObject.SetActive(true);
         ps.Play();
+        if (afterPs != null) afterPs.Play();
     }
 }

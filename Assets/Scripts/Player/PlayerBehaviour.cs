@@ -9,6 +9,11 @@ using Fusion;
 public class PlayerBehaviour : NetworkBehaviour, IHealth
 {
     /// <summary>
+    /// 파티클 매니저
+    /// </summary>
+    public EffectManager effectManager;
+
+    /// <summary>
     /// 폭탄 프리팹
     /// </summary>
     public BombBehaviour bombPrefab;
@@ -106,6 +111,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     public override void Spawned()
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        effectManager.ClearParticles();
     }
 
     public override void Render()
@@ -141,9 +147,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
             {
                 o.GetComponent<BombBehaviour>().Init(CurrentGrid, this, explosionLength);
             });
-
-        Debug.Log($"폭탄 설치 위치{worldGridPosition}");
-        Debug.Log($"유저 위치{CurrentGrid}");
     }
 
     /// <summary>
@@ -249,8 +252,16 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
                 }
             }
         }
+    }
 
-        Debug.Log(hitCount);
+    /// <summary>
+    /// 폭탄 폭발 이팩트 함수 (이팩트 매니저를 위해서 플레이어에 작성)
+    /// </summary>
+    /// <param name="position">폭발하는 위치</param>
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    public void RPC_ExplosionEffect(Vector3 position)
+    {
+        effectManager.PlayParticle((int)EffectType.Explosion, CoordinateConversion.GetGridCenter(position, Board.CellSize));
     }
 
     // IHealth =================================================================================

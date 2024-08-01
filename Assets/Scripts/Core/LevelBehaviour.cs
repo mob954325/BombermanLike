@@ -140,6 +140,7 @@ public class LevelBehaviour : NetworkBehaviour
             cells.Add(cell);
             index++;
         }
+
     }
 
     /// <summary>
