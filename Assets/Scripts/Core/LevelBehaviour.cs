@@ -2,16 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using System;
 
 /// <summary>
 /// 플레이 씬 관리 클래스 
 /// </summary>
 public class LevelBehaviour : NetworkBehaviour
 {
+    /// <summary>
+    /// 폭탄 업그레이드 프리팹
+    /// </summary>
     public NetworkPrefabRef bombUpgradeItem;
 
     public List<NetworkObject> playerObjs = new List<NetworkObject>();
     public List<Cell> cells = new List<Cell>();
+
+    /// <summary>
+    /// 타이머가 끝났을 때 실행하는 델릭에ㅣ트
+    /// </summary>
+    public Action OnTimerEnd;
+
+    /// <summary>
+    /// 생존 플레이어 수
+    /// </summary>
+    private int alivePlayerCount;
 
     // Fusion 함수 ===============================================================================
 
@@ -41,6 +55,7 @@ public class LevelBehaviour : NetworkBehaviour
             PlayerBehaviour playerBehaviour = player.GetComponent<PlayerBehaviour>();
             playerBehaviour.InitBeforeSpawn(index);
             index++;
+            alivePlayerCount++;
         }
     }
     
@@ -135,6 +150,10 @@ public class LevelBehaviour : NetworkBehaviour
         FusionHelper.LocalRunner.Spawn(bombUpgradeItem, world, Quaternion.identity);
     }
 
+    private void GameEndProgress()
+    {
+        OnTimerEnd?.Invoke(); 
+    }
     // 연결해제
     // 승리자 체크
 }
