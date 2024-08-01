@@ -92,10 +92,11 @@ public class LevelBehaviour : NetworkBehaviour
             foreach (var grid in grids)
             {
                 if (grid == cell.GetGridPosition()
-                    && cell.GetCellType() == CellType.Breakable)
+                    && cell.GetCellType() == CellType.Breakable
+                    && cell.gameObject.activeSelf)
                 {
                     cell.RPC_OnHit();
-                    RPC_SpawnItem(CoordinateConversion.GetGridCenter(grid, Board.CellSize));
+                    SpawnItem(FusionHelper.LocalRunner, CoordinateConversion.GetGridCenter(grid, Board.CellSize));
                 }
             }
         }
@@ -144,10 +145,13 @@ public class LevelBehaviour : NetworkBehaviour
     /// <summary>
     /// 랜덤으로 업그레이드 아이템 생성하는 함수
     /// </summary>
-    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    private void RPC_SpawnItem(Vector3 world)
+    //[Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    private void SpawnItem(NetworkRunner runner, Vector3 world)
     {
-        FusionHelper.LocalRunner.Spawn(bombUpgradeItem, world, Quaternion.identity);
+        if(runner.IsServer)
+        {
+            FusionHelper.LocalRunner.Spawn(bombUpgradeItem, world, Quaternion.identity);
+        }
     }
 
     private void GameEndProgress()
