@@ -33,8 +33,6 @@ public class LevelBehaviour : NetworkBehaviour
     {
         CreateBoard();
         SpawnPlayer();
-
-        //FusionHelper.LocalRunner.Spawn(testitem, Vector3.zero + Vector3.up * 3f, Quaternion.identity);
     }
 
     // 기능 함수 ===============================================================================

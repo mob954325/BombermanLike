@@ -11,26 +11,34 @@ public class ItemObject : NetworkBehaviour
 
     private GameObject body;
 
-    private float time = 0f;
+    [Networked]
+    private float time { get; set; }
 
-    // Fusion 함수 ======================================================================================
-
-    public override void Spawned()
+    private void Awake()
     {
         netObj = GetComponent<NetworkObject>();
-        rigid = GetComponent<NetworkRigidbody3D>();
-        body = netObj.transform.GetChild(0).gameObject;
+        rigid = GetComponent<NetworkRigidbody3D>();        
     }
 
-    public override void FixedUpdateNetwork()
+    private void FixedUpdate()
     {
         time += Time.fixedDeltaTime;
         body.transform.Translate(Vector3.up * Mathf.Sin(time * 2f) * Time.fixedDeltaTime);
     }
 
+    // Fusion 함수 ======================================================================================
+
+    public override void Spawned()
+    {
+        body = netObj.transform.GetChild(0).gameObject;
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+    }
+
     public void OnPick()
     {
         Destroy(netObj.gameObject);
-        //netObj.gameObject.SetActive(false);
     }
 }
