@@ -1,13 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 플레이어 행동 클래스
 /// </summary>
 public class PlayerBehaviour : NetworkBehaviour, IHealth
 {
+    /// <summary>
+    /// 플레이어 데이터
+    /// </summary>
+    private PlayerData data;
+
     /// <summary>
     /// 파티클 매니저
     /// </summary>
@@ -94,6 +101,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// 최대 체력
     /// </summary>
     private int maxHp = 3;
+
+    /// <summary>
+    /// 플레이어가 공격을 맞을 때 호출되는 델리게이트
+    /// </summary>
+    public Action OnHit;
 
     // 유니티 함수 ===============================================================================
 
@@ -272,6 +284,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         Hp--;
         Debug.Log($"{Hp}");
 
+        OnHit?.Invoke();
         Color prevColor = bodyMaterial.color;
         bodyMaterial.color = Color.red;
         hitEffect(prevColor);

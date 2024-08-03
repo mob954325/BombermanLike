@@ -33,10 +33,6 @@ public class ItemObject : NetworkBehaviour
         body = netObj.transform.GetChild(0).gameObject;
     }
 
-    public override void FixedUpdateNetwork()
-    {
-    }
-
     public void OnPick()
     {
         Destroy(netObj.gameObject);

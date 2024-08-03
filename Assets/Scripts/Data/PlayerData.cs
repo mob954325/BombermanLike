@@ -29,16 +29,6 @@ public class PlayerData : NetworkBehaviour
     // Networked 변수들 변경 감지용
     private ChangeDetector playerChangeDetector;
 
-    /// <summary>
-    /// 플레이어 이름을 설정하는 함수 (플레이어가 호스트에게 요청)
-    /// </summary>
-    /// <param name="nick">설정할 닉네임</param>
-    [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority, HostMode = RpcHostMode.SourceIsHostPlayer)]
-    public void RPC_SetNick(string nick)
-    {
-        nickName = nick;
-    }
-
     public override void Spawned() // 스폰 함수
     {
         playerChangeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState, false); // 네트워크 변수 변경 감지 시작
@@ -69,5 +59,20 @@ public class PlayerData : NetworkBehaviour
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// 플레이어 이름을 설정하는 함수 (플레이어가 호스트에게 요청)
+    /// </summary>
+    /// <param name="nick">설정할 닉네임</param>
+    [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority, HostMode = RpcHostMode.SourceIsHostPlayer)]
+    public void RPC_SetNick(string nick)
+    {
+        nickName = nick;
+    }
+
+    public void SetInstance(NetworkObject obj)
+    {
+        Instance = obj;
     }
 }

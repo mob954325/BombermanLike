@@ -17,6 +17,8 @@ public class LevelBehaviour : NetworkBehaviour
     public List<NetworkObject> playerObjs = new List<NetworkObject>();
     public List<Cell> cells = new List<Cell>();
 
+    private PlayerInfoPanel playerInfoPanel;
+
     /// <summary>
     /// 타이머가 끝났을 때 실행하는 델릭에ㅣ트
     /// </summary>
@@ -27,12 +29,18 @@ public class LevelBehaviour : NetworkBehaviour
     /// </summary>
     private int alivePlayerCount;
 
+    private void Awake()
+    {
+        playerInfoPanel = FindAnyObjectByType<PlayerInfoPanel>();
+    }
+
     // Fusion 함수 ===============================================================================
 
     public override void Spawned()
     {
         CreateBoard();
         SpawnPlayer();
+        SetUI();
     }
 
     // 기능 함수 ===============================================================================
@@ -127,6 +135,9 @@ public class LevelBehaviour : NetworkBehaviour
         return result;
     }
 
+    /// <summary>
+    /// 보드 생성 함수
+    /// </summary>
     private void CreateBoard()
     {
         Board board = FindObjectOfType<Board>();
@@ -138,7 +149,11 @@ public class LevelBehaviour : NetworkBehaviour
             cells.Add(cell);
             index++;
         }
+    }
 
+    private void SetUI()
+    {
+        playerInfoPanel.Init(FusionHelper.LocalRunner);
     }
 
     /// <summary>

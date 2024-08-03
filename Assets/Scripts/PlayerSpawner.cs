@@ -47,8 +47,12 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
             foreach(var player in runner.ActivePlayers)
             {
-                string playerName = GameManager.instance.GetPlayerData(player, runner).nickName.ToString();
+                PlayerData data = GameManager.instance.GetPlayerData(player, runner);
+                string playerName = data.nickName.ToString();
+
                 NetworkObject obj = SpawnPlayer(runner, player, spawnPosition[index], playerName);
+                data.SetInstance(obj);
+
                 playersList.Add(obj);
 
                 index++;
@@ -69,19 +73,10 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
                 playerPrefab,
                 position,
                 Quaternion.identity,
-                player,
-                SpawnInit
+                player
             );
 
         return playerObject;
-    }
-
-    /// <summary>
-    /// 스폰 초기화 함수 (호스트에서만 처리)
-    /// </summary>
-    private void SpawnInit(NetworkRunner runner, NetworkObject obj)
-    {
-        // 초기화 필요하면 작성
     }
 
     #region Unused CallBacks
