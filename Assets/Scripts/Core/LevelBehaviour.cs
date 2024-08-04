@@ -18,6 +18,7 @@ public class LevelBehaviour : NetworkBehaviour
     public List<Cell> cells = new List<Cell>();
 
     private PlayerInfoPanel playerInfoPanel;
+    private TimerPanel timerPanel;
     private EndGamePanel endGamePanel;
 
     /// <summary>
@@ -30,9 +31,12 @@ public class LevelBehaviour : NetworkBehaviour
     /// </summary>
     [SerializeField]private int alivePlayerCount;
 
+    private bool isPlaying = false;
+
     private void Awake()
     {
         playerInfoPanel = FindAnyObjectByType<PlayerInfoPanel>();
+        timerPanel = FindAnyObjectByType<TimerPanel>();
         endGamePanel = FindAnyObjectByType<EndGamePanel>(FindObjectsInactive.Include);
     }
 
@@ -43,6 +47,18 @@ public class LevelBehaviour : NetworkBehaviour
         CreateBoard();
         SpawnPlayer();
         SetUI();
+
+        isPlaying = true;
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        Debug.Log($"{timerPanel.GetTimeValue()}");
+
+        if(timerPanel.GetTimeValue() < 1)
+        {
+            TimeOut_FinishGame();
+        }
     }
 
     // 기능 함수 ===============================================================================
@@ -188,15 +204,28 @@ public class LevelBehaviour : NetworkBehaviour
                 }
             }
 
-            FinishGame(data);
+            LastStanding_FinishGame(data);
         }
     }
 
     /// <summary>
     /// 게임이 끝나면 실행되는 함수
     /// </summary>
-    private void FinishGame(PlayerData data)
-    {// 클라이언트는 안뜸
+    private void LastStanding_FinishGame(PlayerData data)
+    {
+        isPlaying = false;
+
         endGamePanel.ShowPanel(data);
     }
+
+
+    private void TimeOut_FinishGame()
+    {
+        if (!isPlaying)
+            return;
+
+        isPlaying = false;
+        endGamePanel.ShowPanel(null);
+    }
 }
+

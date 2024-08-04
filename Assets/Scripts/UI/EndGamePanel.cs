@@ -23,10 +23,15 @@ public class EndGamePanel : MonoBehaviour
 
     public void ShowPanel(PlayerData data)
     {
-        string str = data == null ? "Null" : data.ToString();
+        string str = null;
+
+        if (data != null)
+        {
+            str = data.nickName.ToString();
+        }
 
         gameObject.SetActive(true);
-        wonText.text = $"Player[{str}] Won !!!";
+        wonText.text = data != null ? $"Player[{str}] Won !!!" : $"Draw !!!";
         button.onClick.AddListener(GameManager.instance.ExitSession); // 버튼 이벤트 추가 (게임 세션 나가기)
     }
 }

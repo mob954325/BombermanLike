@@ -74,5 +74,9 @@ public class PlayerData : NetworkBehaviour
     public void SetInstance(NetworkObject obj)
     {
         Instance = obj;
+        if(Instance != null)
+        {
+            Instance.GetComponent<PlayerBehaviour>().SetData(this);
+        }
     }
 }

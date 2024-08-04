@@ -22,8 +22,6 @@ public class PlayerInfoPanel : MonoBehaviour
         {
             PlayerData data = GameManager.instance.GetPlayerData(player, runner);
 
-            Debug.Log(data);
-
             playerCards[index].Init(data);
             index++;
         }

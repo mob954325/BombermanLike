@@ -285,6 +285,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         effectManager.PlayParticle((int)EffectType.Explosion, CoordinateConversion.GetGridCenter(position, Board.CellSize));
     }
 
+    public void SetData(PlayerData data)
+    {
+        this.data = data;
+    }
+
     /// <summary>
     /// 플레이어 데이터
     /// </summary>
