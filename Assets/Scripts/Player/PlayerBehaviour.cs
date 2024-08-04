@@ -71,6 +71,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     private bool isSpawed { get; set; } = false;
 
     /// <summary>
+    /// 폭탄 설치했는지 확인하는 변수 (폭탄 여러개 설치 방지용)
+    /// </summary>
+    private bool isSetBomb = false;
+
+    /// <summary>
     /// 몇번째 스폰인지 저장하는 변수
     /// </summary>
     public int No;
@@ -161,6 +166,9 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// </summary>
     public void SetBomb(Vector3 worldGridPosition)
     {
+        if (isSetBomb)
+            return;
+
         Runner.Spawn(bombPrefab,
             worldGridPosition,
             Quaternion.identity,
@@ -169,6 +177,16 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
             {
                 o.GetComponent<BombBehaviour>().Init(CurrentGrid, this, explosionLength);
             });
+
+        isSetBomb = true;
+    }
+
+    /// <summary>
+    /// 폭탄 터지고 실행되는 함수 (폭탄 설치 혀용하게 만들기)
+    /// </summary>
+    public void OnBombExplosioned()
+    {
+        isSetBomb = false;
     }
 
     /// <summary>

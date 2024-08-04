@@ -94,6 +94,8 @@ public class BombBehaviour : NetworkBehaviour
 
     private void OnExplosion()
     {
+        player.OnBombExplosioned();
+
         if(Runner.IsServer) // 1
         {
             List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
