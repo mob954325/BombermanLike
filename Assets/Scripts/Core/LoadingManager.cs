@@ -15,6 +15,10 @@ public class LoadingManager : MonoBehaviour
         {
             Instance = this;
         }
+        else if (Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
 
         //DontDestroyOnLoad(gameObject);
     }
