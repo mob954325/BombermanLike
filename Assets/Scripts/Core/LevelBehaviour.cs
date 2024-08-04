@@ -18,20 +18,22 @@ public class LevelBehaviour : NetworkBehaviour
     public List<Cell> cells = new List<Cell>();
 
     private PlayerInfoPanel playerInfoPanel;
+    private EndGamePanel endGamePanel;
 
     /// <summary>
-    /// 타이머가 끝났을 때 실행하는 델릭에ㅣ트
+    /// 타이머가 끝났을 때 실행하는 델리게이트
     /// </summary>
     public Action OnTimerEnd;
 
     /// <summary>
     /// 생존 플레이어 수
     /// </summary>
-    private int alivePlayerCount;
+    [SerializeField]private int alivePlayerCount;
 
     private void Awake()
     {
         playerInfoPanel = FindAnyObjectByType<PlayerInfoPanel>();
+        endGamePanel = FindAnyObjectByType<EndGamePanel>(FindObjectsInactive.Include);
     }
 
     // Fusion 함수 ===============================================================================
@@ -159,7 +161,6 @@ public class LevelBehaviour : NetworkBehaviour
     /// <summary>
     /// 랜덤으로 업그레이드 아이템 생성하는 함수
     /// </summary>
-    //[Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
     private void SpawnItem(NetworkRunner runner, Vector3 world)
     {
         if(runner.IsServer)
@@ -168,10 +169,34 @@ public class LevelBehaviour : NetworkBehaviour
         }
     }
 
-    private void GameEndProgress()
+    /// <summary>
+    /// 플레이어 죽을 때 실행되는 함수
+    /// </summary>
+    public void OnPlayerDie()
     {
-        OnTimerEnd?.Invoke(); 
+        PlayerData data = null;
+        alivePlayerCount--;
+
+        if(alivePlayerCount <= 1)
+        {
+            foreach(var playerObj in playerObjs) 
+            {
+                PlayerBehaviour player = playerObj.GetBehaviour<PlayerBehaviour>();
+                if(player.Hp > 0) // 생존한 플레이어 데이터 저장
+                {
+                    data = player.GetData();                
+                }
+            }
+
+            FinishGame(data);
+        }
     }
-    // 연결해제
-    // 승리자 체크
+
+    /// <summary>
+    /// 게임이 끝나면 실행되는 함수
+    /// </summary>
+    private void FinishGame(PlayerData data)
+    {// 클라이언트는 안뜸
+        endGamePanel.ShowPanel(data);
+    }
 }

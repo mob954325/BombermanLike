@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
 {
     PlayerInputAction playerInputAction;
+    PlayerBehaviour playerBehaviour;
 
     /// <summary>
     /// 플레이어 방향 값
@@ -28,14 +29,15 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
     private void Awake()
     {
         playerInputAction = new PlayerInputAction();
+        playerBehaviour = GetComponent<PlayerBehaviour>();
     }
 
     private void OnDisable()
     {
-        OnPlayerEnable();
+        OnPlayerDisable();
     }
 
-    private void OnPlayerDisable()
+    private void OnPlayerEnable()
     {
         playerInputAction.Player.Enable();
         playerInputAction.UI.Enable();
@@ -47,7 +49,7 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         playerInputAction.UI.Exit.canceled += OnEscapeInput;
     }
 
-    private void OnPlayerEnable()
+    private void OnPlayerDisable()
     {
         playerInputAction.UI.Exit.canceled -= OnEscapeInput;
         playerInputAction.UI.Exit.performed -= OnEscapeInput;
@@ -95,6 +97,15 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    /// <summary>
+    /// 모든 인풋 비활성화 (게임 끝날 때)
+    /// </summary>
+    public void DisableAllInput()
+    {
+        playerInputAction.Player.Disable();
+        playerInputAction.UI.Disable();
+    }
+
     // Fusion =========================================================================================
 
     public override void Spawned() // 스폰 되었을 때 실행
@@ -102,7 +113,9 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         if(Object.HasInputAuthority)
         {
             Runner.AddCallbacks(this);
-            OnPlayerDisable();
+            OnPlayerEnable();
+
+            playerBehaviour.OnDie += DisableAllInput;
         }
     }
 

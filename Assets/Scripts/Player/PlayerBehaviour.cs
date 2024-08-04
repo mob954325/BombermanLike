@@ -82,7 +82,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         {
             hp = value;
 
-            if(hp < 0) // 사망 처리
+            if(hp < 1) // 사망 처리
             {
                 hp = 0;
                 RPC_OnDie();
@@ -107,6 +107,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// </summary>
     public Action OnHit;
 
+    /// <summary>
+    /// 플레이어 사망시 호출되는 델리게이트
+    /// </summary>
+    public Action OnDie;
+
     // 유니티 함수 ===============================================================================
 
     private void Awake()
@@ -124,6 +129,11 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         effectManager.ClearParticles();
+
+        maxHp = 3;
+        hp = maxHp;
+
+        OnDie += FindAnyObjectByType<LevelBehaviour>().OnPlayerDie;
     }
 
     public override void Render()
@@ -184,7 +194,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     public void InitBeforeSpawn(int index)
     {
         objColor = new Color(Random.value, Random.value, Random.value);
-        hp = maxHp;
         No = index;
 
         isSpawed = true;
@@ -276,6 +285,15 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         effectManager.PlayParticle((int)EffectType.Explosion, CoordinateConversion.GetGridCenter(position, Board.CellSize));
     }
 
+    /// <summary>
+    /// 플레이어 데이터
+    /// </summary>
+    /// <returns></returns>
+    public PlayerData GetData()
+    {
+        return data;
+    }
+
     // IHealth =================================================================================
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
@@ -294,5 +312,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     public void RPC_OnDie()
     {
         Debug.Log($"{this.gameObject.name}, {GetComponent<NetworkObject>().Id} : 사망");
+        OnDie?.Invoke();
     }
 }
