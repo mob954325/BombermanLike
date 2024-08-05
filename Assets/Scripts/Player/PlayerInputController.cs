@@ -84,10 +84,11 @@ public class PlayerInputController : NetworkBehaviour, INetworkRunnerCallbacks
         if(context.performed)
         {
             isPressedEscape = !isPressedEscape;
+            GameManager.instance.ShowExitScreen();
         }
 
         // 화면 활성화 되었을 때 플레이어 움직임 막기
-        if(GameManager.instance.IsExitScreenOpen())
+        if (GameManager.instance.IsExitScreenOpen())
         {
             playerInputAction.Player.Disable();
         }

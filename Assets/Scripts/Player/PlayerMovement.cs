@@ -62,12 +62,10 @@ public class PlayerMovement : NetworkBehaviour
         // 퍼즈 매뉴
         if (data.buttons.IsSet(PlayerButtons.Pause))
         {
-            GameManager.instance.ShowExitScreen();
         }
-        else 
+        else
         {
-            GameManager.instance.CloseExitScreen();
+            //GameManager.instance.CloseExitScreen();
         }
-
     }
 }

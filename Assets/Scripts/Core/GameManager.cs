@@ -206,7 +206,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ShowExitScreen()
     {
-        exitScreen.SetActive(true);
+        exitScreen.SetActive(!exitScreen.activeInHierarchy);
     }
 
     /// <summary>
