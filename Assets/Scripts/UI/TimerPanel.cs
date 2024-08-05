@@ -7,7 +7,7 @@ public class TimerPanel : MonoBehaviour
 {
     TextMeshProUGUI timerText;
     private float timer;
-    private float maxTime = 10;
+    private float maxTime = 180;
 
     private void Awake()
     {

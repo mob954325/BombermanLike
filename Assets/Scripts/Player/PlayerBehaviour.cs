@@ -28,7 +28,8 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// <summary>
     /// 플레이어 모델 머터리얼
     /// </summary>
-    [SerializeField] private Material bodyMaterial;
+    [SerializeField] private Material[] playerMaterials;
+    //bodyMaterial
 
     private ChangeDetector changeDetector;
 
@@ -121,8 +122,13 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
 
     private void Awake()
     {
+        playerMaterials = new Material[4];
+
         Transform child = transform.GetChild(0);
-        bodyMaterial = child.GetComponent<MeshRenderer>().material;
+        for(int i = 0; i < playerMaterials.Length; i++)
+        {
+            playerMaterials[i] = child.GetChild(0).GetChild(i).GetComponent<SkinnedMeshRenderer>().material;
+        }
         collider = transform.GetChild(1).GetComponent<Collider>();
 
         hitColliders = new Collider[2];
@@ -151,12 +157,12 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
             {
                 case nameof(isSpawed):
                     // 색상 변경
-                    bodyMaterial.color = objColor;
+                    ChangeMaterialsColor(Color.white, objColor, true);
                     break;
             }
         }
 
-        bodyMaterial.color = Color.Lerp(bodyMaterial.color, objColor, Time.deltaTime);
+        ChangeMaterialsColor(Color.white, objColor, true);
     }
 
     // 기능 함수 =================================================================================
@@ -231,26 +237,20 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     }
 
     /// <summary>
-    /// 공격 면역 함수
-    /// </summary>
-    private void OnHitImmune()
-    {
-
-    }
-
-    /// <summary>
     /// 피격 받을 때 색상 변경 코루틴
     /// </summary>
+    /// <param name="material">바꿀 머터리얼</param>
     /// <param name="prev">이전 색상(플레이어의 원래 색상)</param>
-    private IEnumerator hitEffect(Color prev)
+    /// <param name="next">바꿀 색상(머터리얼이 가질 색상)</param>
+    private IEnumerator ChangeMaterialColor(Material material, Color prev, Color next)
     {
+        Debug.Log("asfd");
         float remainTime = 1f;
-        Color curColor = bodyMaterial.color;
 
         while (remainTime > 0f)
         {
             remainTime -= Time.deltaTime;
-            bodyMaterial.color = Color.Lerp(prev, curColor, remainTime);
+            material.color = Color.Lerp(next, prev, remainTime);
 
             yield return null;
         }
@@ -262,7 +262,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     public void IncreaseExplosionLength()
     {
         explosionLength++;
-        Debug.Log($"{gameObject.name} : 폭발길이 {explosionLength}");
     }
 
     private void DetectCollsion()
@@ -317,24 +316,45 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         return data;
     }
 
+    /// <summary>
+    /// 플레이어의 모든 머터리얼 색 변경 
+    /// </summary>
+    /// <param name="prev">원래 색상</param>
+    /// <param name="next">바꿀 색상</param>
+    /// <param name="isImmediately">즉시 변경하면 true 아니면 false</param>
+    private void ChangeMaterialsColor(Color prev, Color next, bool isImmediately = false)
+    {
+        if(!isImmediately)
+        {
+            for(int i = 0; i < playerMaterials.Length; i++)
+            {
+               StartCoroutine(ChangeMaterialColor(playerMaterials[i], prev, next));
+            }
+        }
+        else
+        {
+            for (int i = 0; i < playerMaterials.Length; i++)
+            {
+                playerMaterials[i].color = next;
+            }
+        }
+    }
+
     // IHealth =================================================================================
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
     public void RPC_OnHit()
     {
         Hp--;
-        Debug.Log($"{Hp}");
 
         OnHit?.Invoke();
-        Color prevColor = bodyMaterial.color;
-        bodyMaterial.color = Color.red;
-        hitEffect(prevColor);
+        ChangeMaterialsColor(objColor, Color.red, true);
+        ChangeMaterialsColor(Color.red, objColor);
     }
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
     public void RPC_OnDie()
     {
-        Debug.Log($"{this.gameObject.name}, {GetComponent<NetworkObject>().Id} : 사망");
         OnDie?.Invoke();
     }
 }

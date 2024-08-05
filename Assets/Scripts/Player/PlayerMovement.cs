@@ -9,8 +9,10 @@ using Fusion.Addons.Physics;
 /// </summary>
 public class PlayerMovement : NetworkBehaviour
 {
-    NetworkRigidbody3D rigid;
-    PlayerBehaviour playerBehaviour;
+    private NetworkRigidbody3D rigid;
+    private PlayerBehaviour playerBehaviour;
+
+    private GameObject body;
 
     public float speed = 5f;
 
@@ -23,7 +25,8 @@ public class PlayerMovement : NetworkBehaviour
     /// <summary>
     /// 움직임 속도
     /// </summary>
-    public float moveSpeed = 5f;
+    [Networked]
+    public float moveSpeed { get; set; }
 
     /// <summary>
     /// 폭탄 설치 딜레이 시간
@@ -34,19 +37,19 @@ public class PlayerMovement : NetworkBehaviour
     {
         rigid = GetComponent<NetworkRigidbody3D>();
         playerBehaviour = GetComponent<PlayerBehaviour>();
+        body = rigid.transform.GetChild(0).GetChild(0).gameObject;
     }
 
     public override void FixedUpdateNetwork()
     {
-        if (!HasStateAuthority)
-            return;
-
         playerBehaviour.SetGridPosition(rigid.transform.position);
 
         // 움직임 
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
             rigid.transform.Translate(Time.fixedDeltaTime * speed * data.direction);
+            body.GetComponent<NetworkTRSP>().transform.LookAt(rigid.transform.position + data.direction);
+            moveSpeed = speed * data.direction.sqrMagnitude;
         }
 
         // 폭탄 설치
@@ -65,5 +68,6 @@ public class PlayerMovement : NetworkBehaviour
         {
             GameManager.instance.CloseExitScreen();
         }
+
     }
 }

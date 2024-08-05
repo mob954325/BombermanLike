@@ -53,8 +53,6 @@ public class LevelBehaviour : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        Debug.Log($"{timerPanel.GetTimeValue()}");
-
         if(timerPanel.GetTimeValue() < 1)
         {
             TimeOut_FinishGame();
