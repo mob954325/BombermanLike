@@ -1592,7 +1592,7 @@ GameObject:
   - component: {fileID: 6829277578170031108}
   - component: {fileID: 4961483340392427812}
   - component: {fileID: 6035290984396585149}
-  - component: {fileID: 6338193277568774527}
+  - component: {fileID: 4400895406789985912}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -1671,8 +1671,8 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6829277578170031108}
-  - {fileID: 6338193277568774527}
---- !u!114 &6338193277568774527
+  - {fileID: 4400895406789985912}
+--- !u!114 &4400895406789985912
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1681,9 +1681,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6797537349150642473}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 2038946961, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SyncScale: 1
+  SyncParent: 1
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &7025136429765679443
 GameObject:
   m_ObjectHideFlags: 0

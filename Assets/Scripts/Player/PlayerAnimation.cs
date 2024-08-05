@@ -21,10 +21,6 @@ public class PlayerAnimation : NetworkBehaviour
         playerBehaviour.OnDie += PlayDieAnim;
     }
 
-    private void LateUpdate()
-    {
-    }
-
     public override void FixedUpdateNetwork()
     {
         base.FixedUpdateNetwork();

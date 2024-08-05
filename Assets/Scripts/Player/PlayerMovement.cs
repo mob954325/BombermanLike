@@ -12,7 +12,7 @@ public class PlayerMovement : NetworkBehaviour
     private NetworkRigidbody3D rigid;
     private PlayerBehaviour playerBehaviour;
 
-    private GameObject body;
+    private NetworkObject body;
 
     public float speed = 5f;
 
@@ -21,6 +21,9 @@ public class PlayerMovement : NetworkBehaviour
     /// </summary>
     [Networked]
     private TickTimer setBombDelay { get; set; }
+
+    [Networked]
+    private Vector3 inputDir { get; set; }
 
     /// <summary>
     /// 움직임 속도
@@ -33,11 +36,18 @@ public class PlayerMovement : NetworkBehaviour
     /// </summary>
     public float setBombDelayTime = 0.5f;
 
+    private ChangeDetector changeDetector;
+
     private void Awake()
     {
         rigid = GetComponent<NetworkRigidbody3D>();
         playerBehaviour = GetComponent<PlayerBehaviour>();
-        body = rigid.transform.GetChild(0).GetChild(0).gameObject;
+        body = rigid.transform.GetChild(0).GetChild(0).GetComponent<NetworkObject>();
+    }
+
+    public override void Spawned()
+    {
+        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
     public override void FixedUpdateNetwork()
@@ -48,8 +58,8 @@ public class PlayerMovement : NetworkBehaviour
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
             rigid.transform.Translate(Time.fixedDeltaTime * speed * data.direction);
-            body.GetComponent<NetworkTRSP>().transform.LookAt(rigid.transform.position + data.direction);
             moveSpeed = speed * data.direction.sqrMagnitude;
+            inputDir = data.direction;
         }
 
         // 폭탄 설치
@@ -59,13 +69,13 @@ public class PlayerMovement : NetworkBehaviour
             playerBehaviour.SetBomb(CoordinateConversion.GetGridCenter(playerBehaviour.GetGridPosition(), Board.CellSize));
         }
 
-        // 퍼즈 매뉴
-        if (data.buttons.IsSet(PlayerButtons.Pause))
+        foreach(var change in changeDetector.DetectChanges(this))
         {
-        }
-        else
-        {
-            //GameManager.instance.CloseExitScreen();
+            if(change == nameof(inputDir))
+            {
+                body.transform.LookAt(rigid.transform.position + inputDir);
+                break;
+            }
         }
     }
 }
