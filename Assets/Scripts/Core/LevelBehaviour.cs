@@ -70,6 +70,7 @@ public class LevelBehaviour : NetworkBehaviour
         spawner.SpawnAllPlayer(FusionHelper.LocalRunner, out List <NetworkObject> list);           // 모든 플레이어 스폰
 
         int index = 0;
+
         foreach(var player in list)
         {
             playerObjs.Add(player);
@@ -79,6 +80,8 @@ public class LevelBehaviour : NetworkBehaviour
             index++;
             alivePlayerCount++;
         }
+
+        Debug.Log(alivePlayerCount);
     }
     
     /// <summary>
@@ -191,6 +194,9 @@ public class LevelBehaviour : NetworkBehaviour
         PlayerData data = null;
         alivePlayerCount--;
 
+/*        if (FusionHelper.LocalRunner.IsClient)
+            return;*/
+
         if(alivePlayerCount <= 1)
         {
             foreach(var playerObj in playerObjs) 
@@ -211,6 +217,9 @@ public class LevelBehaviour : NetworkBehaviour
     /// </summary>
     private void LastStanding_FinishGame(PlayerData data)
     {
+        if (!isPlaying)
+            return;
+
         isPlaying = false;
 
         endGamePanel.ShowPanel(data);

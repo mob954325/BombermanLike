@@ -38,25 +38,24 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
         playersList = new List<NetworkObject>();
         int index = 0;
 
-        if(!runner.IsClient) // Host만 처리
+        for (int i = 0; i < spawnPosition.Length; i++)
         {
-            for (int i = 0; i < spawnPosition.Length; i++)
-            {
-                spawnPosition[i] = transform.GetChild(i).transform.position;
-            }
+            spawnPosition[i] = transform.GetChild(i).transform.position;
+        }
 
-            foreach(var player in runner.ActivePlayers)
-            {
-                PlayerData data = GameManager.instance.GetPlayerData(player, runner);
-                string playerName = data.nickName.ToString();
+        foreach (var player in runner.ActivePlayers)
+        {
+            PlayerData data = GameManager.instance.GetPlayerData(player, runner);
+            string playerName = data.nickName.ToString();
 
+            if (!runner.IsClient)
+            {
                 NetworkObject obj = SpawnPlayer(runner, player, spawnPosition[index], playerName);
                 data.SetInstance(obj);
-
-                playersList.Add(obj);
-
-                index++;
             }
+
+            playersList.Add(data.Instance);
+            index++;
         }
     }
 

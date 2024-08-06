@@ -175,14 +175,17 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         if (isSetBomb)
             return;
 
-        Runner.Spawn(bombPrefab,
-            worldGridPosition,
-            Quaternion.identity,
-            Object.InputAuthority,
-            (runner, o) =>
-            {
-                o.GetComponent<BombBehaviour>().Init(CurrentGrid, this, explosionLength);
-            });
+        if (!FusionHelper.LocalRunner.IsClient)
+        {
+            Runner.Spawn(bombPrefab,
+                worldGridPosition,
+                Quaternion.identity,
+                Object.InputAuthority,
+                (runner, o) =>
+                {
+                    o.GetComponent<BombBehaviour>().Init(CurrentGrid, this, explosionLength);
+                });
+        }
 
         isSetBomb = true;
     }
@@ -244,7 +247,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// <param name="next">바꿀 색상(머터리얼이 가질 색상)</param>
     private IEnumerator ChangeMaterialColor(Material material, Color prev, Color next)
     {
-        Debug.Log("asfd");
         float remainTime = 1f;
 
         while (remainTime > 0f)

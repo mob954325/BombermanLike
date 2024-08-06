@@ -53,13 +53,14 @@ public class BombBehaviour : NetworkBehaviour
     /// 폭탄 초기화 함수
     /// </summary>
     /// <param name="spawnPosition">스폰한 그리드 위치 값</param>
-    public void Init(Vector2Int spawnPosition, PlayerBehaviour player, int length)
+    public void Init(Vector2Int spawnPosition,PlayerBehaviour player, int length)
     {
         gameObject.name = $"Bomb_{Id}";
         explosionLength = length;
 
         spawnGrid = spawnPosition;
         this.player = player;
+            //GameManager.instance.GetPlayerData(FusionHelper.LocalRunner.LocalPlayer, FusionHelper.LocalRunner).GetComponent<PlayerBehaviour>();
     }
 
     // 네트워크 함수 ===============================================================================
@@ -94,14 +95,17 @@ public class BombBehaviour : NetworkBehaviour
 
     private void OnExplosion()
     {
-        player.OnBombExplosioned();
-
-        if(Runner.IsServer) // 1
+        if(player != null)
         {
-            List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
-            levelBehaviour.CheckHitPlayers(positions);
-            levelBehaviour.CheckHitCells(positions);
-            MultipleExplosionEffects(positions); // 클라이언트는 포지션 값을 받을 수 없음 -> ????
+            player.OnBombExplosioned();
+
+            if(Runner.IsServer) // 1
+            {
+                List<Vector2Int> positions = GetExplosionPosition(); // 폭발 위치        
+                levelBehaviour.CheckHitPlayers(positions);
+                levelBehaviour.CheckHitCells(positions);
+                MultipleExplosionEffects(positions); // 클라이언트는 포지션 값을 받을 수 없음 -> ????
+            }
         }
     }
 
