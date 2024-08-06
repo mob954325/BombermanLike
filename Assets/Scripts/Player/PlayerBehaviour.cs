@@ -36,7 +36,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     /// <summary>
     /// 플레이어 콜라이더
     /// </summary>
-    private Collider collider;
+    private Collider playerCollider;
 
     /// <summary>
     /// 부딪힌 콜라이더
@@ -129,7 +129,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
         {
             playerMaterials[i] = child.GetChild(0).GetChild(i).GetComponent<SkinnedMeshRenderer>().material;
         }
-        collider = transform.GetChild(1).GetComponent<Collider>();
+        playerCollider = transform.GetChild(1).GetComponent<Collider>();
 
         hitColliders = new Collider[2];
     }
@@ -161,7 +161,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
                     break;
             }
         }
-
         ChangeMaterialsColor(Color.white, objColor, true);
     }
 
@@ -270,7 +269,7 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     {
         int hitCount = FusionHelper.LocalRunner.GetPhysicsScene().OverlapBox(
             transform.position,
-            collider.bounds.size * 0.9f,
+            playerCollider.bounds.size * 0.9f,
             hitColliders,
             Quaternion.identity,
             LayerMask.GetMask("Item"),

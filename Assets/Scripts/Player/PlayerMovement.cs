@@ -57,7 +57,8 @@ public class PlayerMovement : NetworkBehaviour
         // 움직임 
         if (GetInput(out PlayerInputData data)) // get PlayerInputData
         {
-            rigid.transform.Translate(Time.fixedDeltaTime * speed * data.direction);
+            //rigid.transform.Translate(Time.fixedDeltaTime * speed * data.direction);
+            rigid.Rigidbody.velocity = speed * data.direction;
             moveSpeed = speed * data.direction.sqrMagnitude;
             inputDir = data.direction;
         }
