@@ -194,17 +194,15 @@ public class LevelBehaviour : NetworkBehaviour
         PlayerData data = null;
         alivePlayerCount--;
 
-/*        if (FusionHelper.LocalRunner.IsClient)
-            return;*/
-
         if(alivePlayerCount <= 1)
         {
-            foreach(var playerObj in playerObjs) 
+            foreach(var player in FusionHelper.LocalRunner.ActivePlayers)
             {
-                PlayerBehaviour player = playerObj.GetBehaviour<PlayerBehaviour>();
-                if(player.Hp > 0) // 생존한 플레이어 데이터 저장
+                PlayerData curData = GameManager.instance.GetPlayerData(player, FusionHelper.LocalRunner);
+                PlayerBehaviour playerBehaviour = curData.Instance.GetComponent<PlayerBehaviour>(); 
+                if(playerBehaviour.Hp > 0) // 생존한 플레이어 데이터 저장
                 {
-                    data = player.GetData();                
+                    data = curData;
                 }
             }
 

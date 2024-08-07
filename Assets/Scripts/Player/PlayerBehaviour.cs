@@ -309,15 +309,6 @@ public class PlayerBehaviour : NetworkBehaviour, IHealth
     }
 
     /// <summary>
-    /// 플레이어 데이터
-    /// </summary>
-    /// <returns></returns>
-    public PlayerData GetData()
-    {
-        return data;
-    }
-
-    /// <summary>
     /// 플레이어의 모든 머터리얼 색 변경 
     /// </summary>
     /// <param name="prev">원래 색상</param>
